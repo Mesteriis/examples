@@ -61,7 +61,6 @@ from PyQt5.QtWidgets import QAbstractItemView, QApplication, QTreeView
 def sizeToString(size):
     if size <= 0:
         return "0 b"
-    decimals = 2
     units = ["b", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
     power = int(math.log(size, 1024))
     try:
@@ -69,8 +68,7 @@ def sizeToString(size):
     except IndexError:
         unit = units[-1]
         power = len(units) - 1
-    if power == 0:
-        decimals = 0
+    decimals = 0 if power == 0 else 2
     normsize = size / math.pow(1024, power)
     #: this should expand to "1.23 GB"
     return "%0.*f %s" % (decimals, normsize, unit)
@@ -115,9 +113,7 @@ class StorageModel(QAbstractTableModel):
         return self.ColumnCount
 
     def rowCount(self, parent):
-        if parent.isValid():
-            return 0
-        return len(self.volumes)
+        return 0 if parent.isValid() else len(self.volumes)
 
     def data(self, index, role):
         if not index.isValid():
@@ -135,16 +131,14 @@ class StorageModel(QAbstractTableModel):
                 label = self.columnNameMap.get(column)
                 value = self.columnFuncMap[column](volume)
                 if isinstance(value, QByteArray):
-                    value = str(bytes(value).decode('utf-8'))
+                    value = bytes(value).decode('utf-8')
                 tooltip.append("{0}: {1}".format(label, value))
             return "\n".join(tooltip)
 
     def headerData(self, section, orientation, role):
         if orientation != Qt.Horizontal:
             return None
-        if role != Qt.DisplayRole:
-            return None
-        return self.columnNameMap.get(section)
+        return None if role != Qt.DisplayRole else self.columnNameMap.get(section)
 
 
 def main(args):

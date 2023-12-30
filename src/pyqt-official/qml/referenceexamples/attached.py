@@ -210,11 +210,7 @@ if party is not None and party.host is not None:
     for guest in party.guests:
         attached = qmlAttachedPropertiesObject(BirthdayParty, guest, False)
 
-        if attached is not None:
-            rsvpDate = attached.property('rsvp')
-        else:
-            rsvpDate = QDate()
-
+        rsvpDate = attached.property('rsvp') if attached is not None else QDate()
         if rsvpDate.isNull():
             print("    \"%s\" RSVP date: Hasn't RSVP'd" % guest.name)
         else:

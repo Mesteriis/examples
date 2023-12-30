@@ -53,8 +53,7 @@ menu = window.menuBar().addMenu("&File")
 open_action = QAction("&Open")
 def open_file():
     global file_path
-    path = QFileDialog.getOpenFileName(window, "Open")[0]
-    if path:
+    if path := QFileDialog.getOpenFileName(window, "Open")[0]:
         text.setPlainText(open(path).read())
         file_path = path
 open_action.triggered.connect(open_file)
@@ -76,8 +75,7 @@ menu.addAction(save_action)
 save_as_action = QAction("Save &As...")
 def save_as():
     global file_path
-    path = QFileDialog.getSaveFileName(window, "Save As")[0]
-    if path:
+    if path := QFileDialog.getSaveFileName(window, "Save As")[0]:
         file_path = path
         save()
 save_as_action.triggered.connect(save_as)

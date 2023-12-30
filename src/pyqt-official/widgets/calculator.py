@@ -87,11 +87,11 @@ class Calculator(QWidget):
         self.display.setFont(font)
 
         self.digitButtons = []
-        
-        for i in range(Calculator.NumDigitButtons):
-            self.digitButtons.append(self.createButton(str(i),
-                    self.digitClicked))
 
+        self.digitButtons.extend(
+            self.createButton(str(i), self.digitClicked)
+            for i in range(Calculator.NumDigitButtons)
+        )
         self.pointButton = self.createButton(".", self.pointClicked)
         self.changeSignButton = self.createButton(u"\N{PLUS-MINUS SIGN}",
                 self.changeSignClicked)
@@ -266,7 +266,7 @@ class Calculator(QWidget):
             self.display.setText('0')
 
         if "." not in self.display.text():
-            self.display.setText(self.display.text() + ".")
+            self.display.setText(f"{self.display.text()}.")
 
         self.waitingForOperand = False
 
@@ -275,7 +275,7 @@ class Calculator(QWidget):
         value = float(text)
 
         if value > 0.0:
-            text = "-" + text
+            text = f"-{text}"
         elif value < 0.0:
             text = text[1:]
 

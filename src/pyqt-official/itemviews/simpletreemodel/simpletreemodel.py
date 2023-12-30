@@ -76,10 +76,7 @@ class TreeItem(object):
         return self.parentItem
 
     def row(self):
-        if self.parentItem:
-            return self.parentItem.childItems.index(self)
-
-        return 0
+        return self.parentItem.childItems.index(self) if self.parentItem else 0
 
 
 class TreeModel(QAbstractItemModel):
@@ -122,13 +119,8 @@ class TreeModel(QAbstractItemModel):
         if not self.hasIndex(row, column, parent):
             return QModelIndex()
 
-        if not parent.isValid():
-            parentItem = self.rootItem
-        else:
-            parentItem = parent.internalPointer()
-
-        childItem = parentItem.child(row)
-        if childItem:
+        parentItem = parent.internalPointer() if parent.isValid() else self.rootItem
+        if childItem := parentItem.child(row):
             return self.createIndex(row, column, childItem)
         else:
             return QModelIndex()
@@ -149,11 +141,7 @@ class TreeModel(QAbstractItemModel):
         if parent.column() > 0:
             return 0
 
-        if not parent.isValid():
-            parentItem = self.rootItem
-        else:
-            parentItem = parent.internalPointer()
-
+        parentItem = parent.internalPointer() if parent.isValid() else self.rootItem
         return parentItem.childCount()
 
     def setupModelData(self, lines, parent):
@@ -169,9 +157,7 @@ class TreeModel(QAbstractItemModel):
                     break
                 position += 1
 
-            lineData = lines[number][position:].trimmed()
-
-            if lineData:
+            if lineData := lines[number][position:].trimmed():
                 # Read the column data from the rest of the line.
                 columnData = [s for s in lineData.split('\t') if s]
 
@@ -184,7 +170,7 @@ class TreeModel(QAbstractItemModel):
                         indentations.append(position)
 
                 else:
-                    while position < indentations[-1] and len(parents) > 0:
+                    while position < indentations[-1] and parents:
                         parents.pop()
                         indentations.pop()
 

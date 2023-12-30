@@ -99,11 +99,11 @@ class MenuContentItem(DemoItem):
         result = ''
         line = in_str.readLine()
         while True:
-            result += line + " "
+            result += f"{line} "
             line = in_str.readLine()
             if not line:
                 nrPara -= 1
-                line = "<br><br>" + in_str.readLine()
+                line = f"<br><br>{in_str.readLine()}"
 
             if nrPara == 0 or in_str.atEnd():
                 break
@@ -115,7 +115,7 @@ class MenuContentItem(DemoItem):
         self.heading = HeadingItem(self.name, self)
         para1 = self.loadDescription(0, 1)
         if not para1:
-            para1 = Colors.contentColor + "Could not load description. Ensure that the documentation for Qt is built."
+            para1 = f"{Colors.contentColor}Could not load description. Ensure that the documentation for Qt is built."
         bgcolor = Colors.sceneBg1.darker(200)
         bgcolor.setAlpha(100)
         self.description1 = DemoTextItem(para1, Colors.contentFont(),

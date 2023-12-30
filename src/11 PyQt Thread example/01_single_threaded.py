@@ -20,8 +20,7 @@ window.show()
 
 # Event handlers:
 def display_new_messages():
-    new_message = server.get(chat_url).text
-    if new_message:
+    if new_message := server.get(chat_url).text:
         text_area.appendPlainText(new_message)
 
 def send_message():

@@ -105,25 +105,15 @@ class Guide(object):
                 if dx != 0:
                     d = moveSpeed * dy / abs(dx)
 
-                    if dx > 0:
-                        s = moveSpeed
-                    else:
-                        s = -moveSpeed
-
+                    s = moveSpeed if dx > 0 else -moveSpeed
                     dest.setX(item.getGuidedPos().x() + s)
                     dest.setY(item.getGuidedPos().y() + d)
-            else:
-                # Walk along y-axis.
-                if dy != 0:
-                    d = moveSpeed * dx / abs(dy)
+            elif dy != 0:
+                d = moveSpeed * dx / abs(dy)
 
-                    if dy > 0:
-                        s = moveSpeed
-                    else:
-                        s = -moveSpeed
-
-                    dest.setX(item.getGuidedPos().x() + d)
-                    dest.setY(item.getGuidedPos().y() + s)
+                s = moveSpeed if dy > 0 else -moveSpeed
+                dest.setX(item.getGuidedPos().x() + d)
+                dest.setY(item.getGuidedPos().y() + s)
 
         item.setGuidedPos(dest)
 

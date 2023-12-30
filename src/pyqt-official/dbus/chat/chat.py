@@ -131,7 +131,7 @@ class ChatMainWindow(QMainWindow, Ui_ChatMainWindow):
 
     @pyqtSlot(str, str)
     def messageSlot(self, nickname, text):
-        self.m_messages.append("<%s> %s" % (nickname, text))
+        self.m_messages.append(f"<{nickname}> {text}")
 
         if len(self.m_messages) > 100:
             self.m_messages.pop(0)
@@ -140,7 +140,7 @@ class ChatMainWindow(QMainWindow, Ui_ChatMainWindow):
 
     @pyqtSlot(str, str)
     def actionSlot(self, nickname, text):
-        self.m_messages.append("* %s %s" % (nickname, text))
+        self.m_messages.append(f"* {nickname} {text}")
 
         if len(self.m_messages) > 100:
             self.m_messages.pop(0)
@@ -165,7 +165,7 @@ class ChatMainWindow(QMainWindow, Ui_ChatMainWindow):
         if dialog.exec_() == QDialog.Accepted:
             old = self.m_nickname
             self.m_nickname = dialog.nickname.text().strip()
-            self.action.emit(old, "is now known as %s" % self.m_nickname)
+            self.action.emit(old, f"is now known as {self.m_nickname}")
 
     @pyqtSlot()
     def aboutQt(self):

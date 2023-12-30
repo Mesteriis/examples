@@ -90,7 +90,7 @@ class StyleSheetEditor(QDialog):
             self.saveStyleSheet(fileName)
 
     def loadStyleSheet(self, sheetName):
-        file = QFile(':/qss/%s.qss' % sheetName.lower())
+        file = QFile(f':/qss/{sheetName.lower()}.qss')
         file.open(QFile.ReadOnly)
 
         styleSheet = file.readAll()

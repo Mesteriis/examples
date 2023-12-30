@@ -46,26 +46,26 @@ class PythonConsoleWidget(QLineEdit):
         self.returnPressed.connect(self.execute)
     
     def keyReleaseEvent(self, event):
-    
-        if event.type() == QEvent.KeyRelease:
-        
-            if event.key() == Qt.Key_Up:
-                current = max(0, self.current - 1)
-                if 0 <= current < len(self.history):
-                    self.setText(self.history[current])
-                    self.current = current
-                
-                event.accept()
-            
-            elif event.key() == Qt.Key_Down:
-                current = min(len(self.history), self.current + 1)
-                if 0 <= current < len(self.history):
-                    self.setText(self.history[current])
-                else:
-                    self.clear()
+
+        if event.type() != QEvent.KeyRelease:
+            return
+        if event.key() == Qt.Key_Up:
+            current = max(0, self.current - 1)
+            if 0 <= current < len(self.history):
+                self.setText(self.history[current])
                 self.current = current
-                
-                event.accept()
+
+            event.accept()
+
+        elif event.key() == Qt.Key_Down:
+            current = min(len(self.history), self.current + 1)
+            if 0 <= current < len(self.history):
+                self.setText(self.history[current])
+            else:
+                self.clear()
+            self.current = current
+
+            event.accept()
     
     def execute(self):
     

@@ -84,7 +84,7 @@ class MainWindow(QMainWindow):
                     text = str(text, encoding='ascii')
                 except TypeError:
                     # Python v2.
-                    text = str(text)
+                    text = text
 
                 self.editor.setPlainText(text)
 

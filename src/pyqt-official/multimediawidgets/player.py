@@ -287,7 +287,10 @@ class FrameProcessor(QObject):
         if levels and frame.map(QAbstractVideoBuffer.ReadOnly):
             pixelFormat = frame.pixelFormat()
 
-            if pixelFormat == QVideoFrame.Format_YUV420P or pixelFormat == QVideoFrame.Format_NV12:
+            if pixelFormat in [
+                QVideoFrame.Format_YUV420P,
+                QVideoFrame.Format_NV12,
+            ]:
                 # Process YUV data.
                 bits = frame.bits()
                 for idx in range(frame.height() * frame.width()):
@@ -531,9 +534,9 @@ class Player(QWidget):
 
     def metaDataChanged(self):
         if self.player.isMetaDataAvailable():
-            self.setTrackInfo("%s - %s" % (
-                    self.player.metaData(QMediaMetaData.AlbumArtist),
-                    self.player.metaData(QMediaMetaData.Title)))
+            self.setTrackInfo(
+                f"{self.player.metaData(QMediaMetaData.AlbumArtist)} - {self.player.metaData(QMediaMetaData.Title)}"
+            )
 
     def previousClicked(self):
         # Go to the previous track if we are within the first 5 seconds of
@@ -601,7 +604,7 @@ class Player(QWidget):
         self.trackInfo = info
 
         if self.statusInfo != "":
-            self.setWindowTitle("%s | %s" % (self.trackInfo, self.statusInfo))
+            self.setWindowTitle(f"{self.trackInfo} | {self.statusInfo}")
         else:
             self.setWindowTitle(self.trackInfo)
 
@@ -609,7 +612,7 @@ class Player(QWidget):
         self.statusInfo = info
 
         if self.statusInfo != "":
-            self.setWindowTitle("%s | %s" % (self.trackInfo, self.statusInfo))
+            self.setWindowTitle(f"{self.trackInfo} | {self.statusInfo}")
         else:
             self.setWindowTitle(self.trackInfo)
 
@@ -625,7 +628,7 @@ class Player(QWidget):
                     duration%60, (duration*1000)%1000);
 
             format = 'hh:mm:ss' if duration > 3600 else 'mm:ss'
-            tStr = currentTime.toString(format) + " / " + totalTime.toString(format)
+            tStr = f"{currentTime.toString(format)} / {totalTime.toString(format)}"
         else:
             tStr = ""
 

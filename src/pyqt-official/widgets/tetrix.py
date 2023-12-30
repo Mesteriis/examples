@@ -262,7 +262,10 @@ class TetrixBoard(QFrame):
             super(TetrixBoard, self).timerEvent(event)
 
     def clearBoard(self):
-        self.board = [NoShape for i in range(TetrixBoard.BoardHeight * TetrixBoard.BoardWidth)]
+        self.board = [
+            NoShape
+            for _ in range(TetrixBoard.BoardHeight * TetrixBoard.BoardWidth)
+        ]
 
     def dropDown(self):
         dropHeight = 0
@@ -302,13 +305,10 @@ class TetrixBoard(QFrame):
         numFullLines = 0
 
         for i in range(TetrixBoard.BoardHeight - 1, -1, -1):
-            lineIsFull = True
-
-            for j in range(TetrixBoard.BoardWidth):
-                if self.shapeAt(j, i) == NoShape:
-                    lineIsFull = False
-                    break
-
+            lineIsFull = all(
+                self.shapeAt(j, i) != NoShape
+                for j in range(TetrixBoard.BoardWidth)
+            )
             if lineIsFull:
                 numFullLines += 1
                 for k in range(TetrixBoard.BoardHeight - 1):

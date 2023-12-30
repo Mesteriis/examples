@@ -195,11 +195,7 @@ class GLWidget(QOpenGLWidget):
         self.gl.glShadeModel(self.gl.GL_FLAT)
 
         for i in range(2):
-            if i == 0:
-                sign = +1.0
-            else:
-                sign = -1.0
-
+            sign = +1.0 if i == 0 else -1.0
             self.gl.glNormal3d(0.0, 0.0, sign)
 
             self.gl.glBegin(self.gl.GL_QUAD_STRIP)

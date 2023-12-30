@@ -204,8 +204,11 @@ class BlockingClient(QWidget):
                     "fortune server is running, and check that the host name "
                     "and port settings are correct.")
         else:
-            QMessageBox.information(self, "Blocking Fortune Client",
-                    "The following error occurred: %s." % message)
+            QMessageBox.information(
+                self,
+                "Blocking Fortune Client",
+                f"The following error occurred: {message}.",
+            )
 
         self.getFortuneButton.setEnabled(True)
 

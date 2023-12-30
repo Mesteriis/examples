@@ -92,7 +92,7 @@ class AnalogClock(QWidget):
 
         painter.setPen(AnalogClock.hourColor)
 
-        for i in range(12):
+        for _ in range(12):
             painter.drawLine(88, 0, 96, 0)
             painter.rotate(30.0)
 

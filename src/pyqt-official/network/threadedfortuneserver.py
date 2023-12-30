@@ -110,8 +110,11 @@ class Dialog(QDialog):
         quitButton.setAutoDefault(False)
 
         if not self.server.listen():
-            QMessageBox.critical(self, "Threaded Fortune Server",
-                    "Unable to start the server: %s." % self.server.errorString())
+            QMessageBox.critical(
+                self,
+                "Threaded Fortune Server",
+                f"Unable to start the server: {self.server.errorString()}.",
+            )
             self.close()
             return
 

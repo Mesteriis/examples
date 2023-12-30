@@ -93,8 +93,11 @@ class TableEditor(QDialog):
             self.model.database().commit()
         else:
             self.model.database().rollback()
-            QMessageBox.warning(self, "Cached Table",
-                        "The database reported an error: %s" % self.model.lastError().text())
+            QMessageBox.warning(
+                self,
+                "Cached Table",
+                f"The database reported an error: {self.model.lastError().text()}",
+            )
 
 
 if __name__ == '__main__':

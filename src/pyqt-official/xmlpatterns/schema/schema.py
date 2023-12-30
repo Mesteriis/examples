@@ -244,13 +244,12 @@ class MainWindow(QMainWindow, Ui_SchemaMainWindow):
     def moveCursor(self, line, column):
         self.instanceEdit.moveCursor(QTextCursor.Start)
 
-        for i in range(1, line):
+        for _ in range(1, line):
             self.instanceEdit.moveCursor(QTextCursor.Down)
 
-        for i in range(1, column):
+        for _ in range(1, column):
             self.instanceEdit.moveCursor(QTextCursor.Right)
 
-        extraSelections = []
         selection = QTextEdit.ExtraSelection()
 
         lineColor = QColor(Qt.red).lighter(160)
@@ -258,8 +257,7 @@ class MainWindow(QMainWindow, Ui_SchemaMainWindow):
         selection.format.setProperty(QTextFormat.FullWidthSelection, True)
         selection.cursor = self.instanceEdit.textCursor()
         selection.cursor.clearSelection()
-        extraSelections.append(selection)
-
+        extraSelections = [selection]
         self.instanceEdit.setExtraSelections(extraSelections)
 
         self.instanceEdit.setFocus()

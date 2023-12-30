@@ -234,7 +234,7 @@ class MainWindow(QMainWindow):
         for format in QImageWriter.supportedImageFormats():
             format = str(format)
 
-            text = format.upper() + "..."
+            text = f"{format.upper()}..."
 
             action = QAction(text, self, triggered=self.save)
             action.setData(format)
@@ -301,14 +301,15 @@ class MainWindow(QMainWindow):
         return True
 
     def saveFile(self, fileFormat):
-        initialPath = QDir.currentPath() + '/untitled.' + fileFormat
+        initialPath = f'{QDir.currentPath()}/untitled.{fileFormat}'
 
-        fileName, _ = QFileDialog.getSaveFileName(self, "Save As", initialPath,
-                "%s Files (*.%s);;All Files (*)" % (fileFormat.upper(), fileFormat))
-        if fileName:
-            return self.scribbleArea.saveImage(fileName, fileFormat)
-
-        return False
+        fileName, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save As",
+            initialPath,
+            f"{fileFormat.upper()} Files (*.{fileFormat});;All Files (*)",
+        )
+        return self.scribbleArea.saveImage(fileName, fileFormat) if fileName else False
 
 
 if __name__ == '__main__':

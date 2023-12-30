@@ -184,21 +184,17 @@ class Window(QWidget):
         self.localeCombo = QComboBox()
 
         curLocaleIndex = -1
-        index = 0
-
         this_language = self.locale().nativeLanguageName()
         this_country = self.locale().nativeCountryName()
 
-        for locale in QLocale.matchingLocales(QLocale.AnyLanguage, QLocale.AnyScript, QLocale.AnyCountry):
+        for index, locale in enumerate(QLocale.matchingLocales(QLocale.AnyLanguage, QLocale.AnyScript, QLocale.AnyCountry)):
             language = locale.nativeLanguageName()
             country = locale.nativeCountryName()
 
             if language == this_language and country == this_country:
                 curLocaleIndex = index
 
-            self.localeCombo.addItem('%s/%s' % (language, country), locale)
-            index += 1
-
+            self.localeCombo.addItem(f'{language}/{country}', locale)
         if curLocaleIndex != -1:
             self.localeCombo.setCurrentIndex(curLocaleIndex)
 

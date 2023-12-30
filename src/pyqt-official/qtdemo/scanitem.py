@@ -67,12 +67,9 @@ class ScanItem(DemoItem):
         if Colors.useEightBitPalette:
             painter.setPen(QPen(QColor(100, 100, 100), 2))
             painter.setBrush(QColor(206, 246, 117))
-            painter.drawEllipse(1, 1, scaledRect.width() - 2,
-                    scaledRect.height() - 2)
         else:
             painter.setPen(QPen(QColor(0, 0, 0, 15), 1))
             painter.setBrush(QColor(0, 0, 0, 15))
-            painter.drawEllipse(1, 1, scaledRect.width() - 2,
-                    scaledRect.height() - 2)
-
+        painter.drawEllipse(1, 1, scaledRect.width() - 2,
+                scaledRect.height() - 2)
         return image

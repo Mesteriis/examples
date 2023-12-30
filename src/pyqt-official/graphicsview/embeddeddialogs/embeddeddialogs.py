@@ -104,7 +104,10 @@ class CustomProxy(QGraphicsProxyWidget):
             self.zoomOut()
 
     def sceneEventFilter(self, watched, event):
-        if watched.isWindow() and (event.type() == QEvent.UngrabMouse or event.type() == QEvent.GrabMouse):
+        if watched.isWindow() and event.type() in [
+            QEvent.UngrabMouse,
+            QEvent.GrabMouse,
+        ]:
             self.popupShown = watched.isVisible()
             if not self.popupShown and not self.isUnderMouse():
                 self.zoomOut()
@@ -112,13 +115,13 @@ class CustomProxy(QGraphicsProxyWidget):
         return super(CustomProxy, self).sceneEventFilter(watched, event)
 
     def itemChange(self, change, value):
-        if change == self.ItemChildAddedChange or change == self.ItemChildRemovedChange :
-            if change == self.ItemChildAddedChange:
-                self.currentPopup = value
-                self.currentPopup.setCacheMode(self.ItemCoordinateCache)
-                if self.scene() is not None:
-                    self.currentPopup.installSceneEventFilter(self)
-            elif self.scene() is not None:
+        if change == self.ItemChildAddedChange:
+            self.currentPopup = value
+            self.currentPopup.setCacheMode(self.ItemCoordinateCache)
+            if self.scene() is not None:
+                self.currentPopup.installSceneEventFilter(self)
+        elif change == self.ItemChildRemovedChange:
+            if self.scene() is not None:
                 self.currentPopup.removeSceneEventFilter(self)
                 self.currentPopup = None
         elif self.currentPopup is not None and change == self.ItemSceneHasChanged:

@@ -129,8 +129,7 @@ class MainWindow(QMainWindow):
         if path:
             svg_file = QFile(path)
             if not svg_file.exists():
-                QMessageBox.critical(self, "Open SVG File",
-                        "Could not open file '%s'." % path)
+                QMessageBox.critical(self, "Open SVG File", f"Could not open file '{path}'.")
 
                 self.outlineAction.setEnabled(False)
                 self.backgroundAction.setEnabled(False)
@@ -140,7 +139,7 @@ class MainWindow(QMainWindow):
 
             if not path.startswith(':/'):
                 self.currentPath = path
-                self.setWindowTitle("%s - SVGViewer" % self.currentPath)
+                self.setWindowTitle(f"{self.currentPath} - SVGViewer")
 
             self.outlineAction.setEnabled(True)
             self.backgroundAction.setEnabled(True)
@@ -207,11 +206,7 @@ class SvgView(QGraphicsView):
         else:
             drawBackground = False
 
-        if self.outlineItem:
-            drawOutline = self.outlineItem.isVisible()
-        else:
-            drawOutline = True
-
+        drawOutline = self.outlineItem.isVisible() if self.outlineItem else True
         s.clear()
         self.resetTransform()
 

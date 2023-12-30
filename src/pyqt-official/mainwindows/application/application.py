@@ -88,17 +88,11 @@ class MainWindow(QMainWindow):
                 self.loadFile(fileName)
 
     def save(self):
-        if self.curFile:
-            return self.saveFile(self.curFile)
-
-        return self.saveAs()
+        return self.saveFile(self.curFile) if self.curFile else self.saveAs()
 
     def saveAs(self):
         fileName, _ = QFileDialog.getSaveFileName(self)
-        if fileName:
-            return self.saveFile(fileName)
-
-        return False
+        return self.saveFile(fileName) if fileName else False
 
     def about(self):
         QMessageBox.about(self, "About Application",
@@ -112,17 +106,32 @@ class MainWindow(QMainWindow):
     def createActions(self):
         root = QFileInfo(__file__).absolutePath()
 
-        self.newAct = QAction(QIcon(root + '/images/new.png'), "&New", self,
-                shortcut=QKeySequence.New, statusTip="Create a new file",
-                triggered=self.newFile)
+        self.newAct = QAction(
+            QIcon(f'{root}/images/new.png'),
+            "&New",
+            self,
+            shortcut=QKeySequence.New,
+            statusTip="Create a new file",
+            triggered=self.newFile,
+        )
 
-        self.openAct = QAction(QIcon(root + '/images/open.png'), "&Open...",
-                self, shortcut=QKeySequence.Open,
-                statusTip="Open an existing file", triggered=self.open)
+        self.openAct = QAction(
+            QIcon(f'{root}/images/open.png'),
+            "&Open...",
+            self,
+            shortcut=QKeySequence.Open,
+            statusTip="Open an existing file",
+            triggered=self.open,
+        )
 
-        self.saveAct = QAction(QIcon(root + '/images/save.png'), "&Save", self,
-                shortcut=QKeySequence.Save,
-                statusTip="Save the document to disk", triggered=self.save)
+        self.saveAct = QAction(
+            QIcon(f'{root}/images/save.png'),
+            "&Save",
+            self,
+            shortcut=QKeySequence.Save,
+            statusTip="Save the document to disk",
+            triggered=self.save,
+        )
 
         self.saveAsAct = QAction("Save &As...", self,
                 shortcut=QKeySequence.SaveAs,
@@ -132,20 +141,32 @@ class MainWindow(QMainWindow):
         self.exitAct = QAction("E&xit", self, shortcut="Ctrl+Q",
                 statusTip="Exit the application", triggered=self.close)
 
-        self.cutAct = QAction(QIcon(root + '/images/cut.png'), "Cu&t", self,
-                shortcut=QKeySequence.Cut,
-                statusTip="Cut the current selection's contents to the clipboard",
-                triggered=self.textEdit.cut)
+        self.cutAct = QAction(
+            QIcon(f'{root}/images/cut.png'),
+            "Cu&t",
+            self,
+            shortcut=QKeySequence.Cut,
+            statusTip="Cut the current selection's contents to the clipboard",
+            triggered=self.textEdit.cut,
+        )
 
-        self.copyAct = QAction(QIcon(root + '/images/copy.png'), "&Copy", self,
-                shortcut=QKeySequence.Copy,
-                statusTip="Copy the current selection's contents to the clipboard",
-                triggered=self.textEdit.copy)
+        self.copyAct = QAction(
+            QIcon(f'{root}/images/copy.png'),
+            "&Copy",
+            self,
+            shortcut=QKeySequence.Copy,
+            statusTip="Copy the current selection's contents to the clipboard",
+            triggered=self.textEdit.copy,
+        )
 
-        self.pasteAct = QAction(QIcon(root + '/images/paste.png'), "&Paste",
-                self, shortcut=QKeySequence.Paste,
-                statusTip="Paste the clipboard's contents into the current selection",
-                triggered=self.textEdit.paste)
+        self.pasteAct = QAction(
+            QIcon(f'{root}/images/paste.png'),
+            "&Paste",
+            self,
+            shortcut=QKeySequence.Paste,
+            statusTip="Paste the clipboard's contents into the current selection",
+            triggered=self.textEdit.paste,
+        )
 
         self.aboutAct = QAction("&About", self,
                 statusTip="Show the application's About box",
@@ -257,12 +278,8 @@ class MainWindow(QMainWindow):
         self.textEdit.document().setModified(False)
         self.setWindowModified(False)
 
-        if self.curFile:
-            shownName = self.strippedName(self.curFile)
-        else:
-            shownName = 'untitled.txt'
-
-        self.setWindowTitle("%s[*] - Application" % shownName)
+        shownName = self.strippedName(self.curFile) if self.curFile else 'untitled.txt'
+        self.setWindowTitle(f"{shownName}[*] - Application")
 
     def strippedName(self, fullFileName):
         return QFileInfo(fullFileName).fileName()

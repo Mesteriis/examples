@@ -103,12 +103,12 @@ class MainWindow(QMainWindow):
         cursor.insertBlock()
         cursor.insertBlock()
         cursor.insertText("Dear ", textFormat)
-        cursor.insertText("NAME", italicFormat)   
+        cursor.insertText("NAME", italicFormat)
         cursor.insertText(",", textFormat)
-        for i in range(3):
+        for _ in range(3):
             cursor.insertBlock()
         cursor.insertText("Yours sincerely,", textFormat)
-        for i in range(3):
+        for _ in range(3):
             cursor.insertBlock()
         cursor.insertText("The Boss", textFormat)
         cursor.insertBlock()
@@ -143,7 +143,7 @@ class MainWindow(QMainWindow):
         out << self.textEdit.toHtml()
         QApplication.restoreOverrideCursor()
 
-        self.statusBar().showMessage("Saved '%s'" % filename, 2000)
+        self.statusBar().showMessage(f"Saved '{filename}'", 2000)
 
     def undo(self):
         document = self.textEdit.document()

@@ -72,7 +72,7 @@ class Client(QDialog):
 
             domain = QHostInfo.localDomainName()
             if domain != '':
-                self.hostCombo.addItem(name + '.' + domain)
+                self.hostCombo.addItem(f'{name}.{domain}')
 
         if name != 'localhost':
             self.hostCombo.addItem('localhost')
@@ -187,8 +187,11 @@ class Client(QDialog):
                     "fortune server is running, and check that the host name "
                     "and port settings are correct.")
         else:
-            QMessageBox.information(self, "Fortune Client",
-                    "The following error occurred: %s." % self.tcpSocket.errorString())
+            QMessageBox.information(
+                self,
+                "Fortune Client",
+                f"The following error occurred: {self.tcpSocket.errorString()}.",
+            )
 
         self.getFortuneButton.setEnabled(True)
 

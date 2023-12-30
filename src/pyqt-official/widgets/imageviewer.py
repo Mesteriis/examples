@@ -78,8 +78,7 @@ class ImageViewer(QMainWindow):
         if fileName:
             image = QImage(fileName)
             if image.isNull():
-                QMessageBox.information(self, "Image Viewer",
-                        "Cannot load %s." % fileName)
+                QMessageBox.information(self, "Image Viewer", f"Cannot load {fileName}.")
                 return
 
             self.imageLabel.setPixmap(QPixmap.fromImage(image))

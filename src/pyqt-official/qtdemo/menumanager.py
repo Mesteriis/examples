@@ -99,7 +99,7 @@ class MenuManager(QObject):
 
     def readXmlDocument(self):
         root = QFileInfo(__file__).absolutePath()
-        xml_file = QFile(root + '/examples.xml')
+        xml_file = QFile(f'{root}/examples.xml')
         xml_file.open(QFile.ReadOnly | QFile.Text)
         contents = xml_file.readAll().data()
         xml_file.close()

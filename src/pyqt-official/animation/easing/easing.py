@@ -74,11 +74,7 @@ class Animation(QPropertyAnimation):
                 self.m_path.addEllipse(QRectF(start, end))
 
             dura = self.duration()
-            if dura == 0:
-                progress = 1.0
-            else:
-                progress = (((currentTime - 1) % dura) + 1) / float(dura)
-
+            progress = 1.0 if dura == 0 else (((currentTime - 1) % dura) + 1) / float(dura)
             easedProgress = self.easingCurve().valueForProgress(progress)
             if easedProgress > 1.0:
                 easedProgress -= 1.0

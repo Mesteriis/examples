@@ -215,11 +215,10 @@ class SpreadSheet(QMainWindow):
         text = self.formulaInput.text()
         row = self.table.currentRow()
         col = self.table.currentColumn()
-        item = self.table.item(row, col)
-        if not item:
-            self.table.setItem(row, col, SpreadSheetItem(text))
-        else:
+        if item := self.table.item(row, col):
             item.setData(Qt.EditRole, text)
+        else:
+            self.table.setItem(row, col, SpreadSheetItem(text))
         self.table.viewport().update()
 
     def selectColor(self):
@@ -247,12 +246,8 @@ class SpreadSheet(QMainWindow):
 
     def runInputDialog(self, title, c1Text, c2Text, opText,
                        outText, cell1, cell2, outCell):
-        rows = []
-        cols = []
-        for r in range(self.table.rowCount()):
-            rows.append(str(r + 1))
-        for c in range(self.table.columnCount()):
-            cols.append(chr(ord('A') + c))
+        rows = [str(r + 1) for r in range(self.table.rowCount())]
+        cols = [chr(ord('A') + c) for c in range(self.table.columnCount())]
         addDialog = QDialog(self)
         addDialog.setWindowTitle(title)
         group = QGroupBox(title, addDialog)
@@ -343,8 +338,7 @@ class SpreadSheet(QMainWindow):
         col_first = 0
         col_last = 0
         col_cur = 0
-        selected = self.table.selectedItems()
-        if selected:
+        if selected := self.table.selectedItems():
             first = selected[0]
             last = selected[-1]
             row_first = self.table.row(first)
@@ -352,8 +346,7 @@ class SpreadSheet(QMainWindow):
             col_first = self.table.column(first)
             col_last = self.table.column(last)
 
-        current = self.table.currentItem()
-        if current:
+        if current := self.table.currentItem():
             row_cur = self.table.row(current)
             col_cur = self.table.column(current)
 
@@ -365,20 +358,19 @@ class SpreadSheet(QMainWindow):
                 cell1, cell2, out)
         if ok:
             row, col = decode_pos(out)
-            self.table.item(row, col).setText("sum %s %s" % (cell1, cell2))
+            self.table.item(row, col).setText(f"sum {cell1} {cell2}")
 
     def actionMath_helper(self, title, op):
         cell1 = "C1"
         cell2 = "C2"
         out = "C3"
-        current = self.table.currentItem()
-        if current:
+        if current := self.table.currentItem():
             out = encode_pos(self.table.currentRow(), self.table.currentColumn())
         ok, cell1, cell2, out = self.runInputDialog(title, "Cell 1", "Cell 2",
                 op, "Output to:", cell1, cell2, out)
         if ok:
             row, col = decode_pos(out)
-            self.table.item(row, col).setText("%s %s %s" % (op, cell1, cell2))
+            self.table.item(row, col).setText(f"{op} {cell1} {cell2}")
 
     def actionAdd(self):
         self.actionMath_helper("Addition", "+")

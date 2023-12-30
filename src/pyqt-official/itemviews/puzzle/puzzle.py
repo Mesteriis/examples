@@ -214,17 +214,10 @@ class PiecesModel(QAbstractListModel):
         if role == Qt.UserRole:
             return self.pixmaps[index.row()]
 
-        if role == Qt.UserRole + 1:
-            return self.locations[index.row()]
-
-        return None
+        return self.locations[index.row()] if role == Qt.UserRole + 1 else None
 
     def addPiece(self, pixmap, location):
-        if random.random() < 0.5:
-            row = 0
-        else:
-            row = len(self.pixmaps)
-
+        row = 0 if random.random() < 0.5 else len(self.pixmaps)
         self.beginInsertRows(QModelIndex(), row, row)
         self.pixmaps.insert(row, pixmap)
         self.locations.insert(row, location)
@@ -284,10 +277,7 @@ class PiecesModel(QAbstractListModel):
             return False
 
         if not parent.isValid():
-            if row < 0:
-                endRow = len(self.pixmaps)
-            else:
-                endRow = min(row, len(self.pixmaps))
+            endRow = len(self.pixmaps) if row < 0 else min(row, len(self.pixmaps))
         else:
             endRow = parent.row()
 
@@ -309,10 +299,7 @@ class PiecesModel(QAbstractListModel):
         return True
 
     def rowCount(self, parent):
-        if parent.isValid():
-            return 0
-        else:
-            return len(self.pixmaps)
+        return 0 if parent.isValid() else len(self.pixmaps)
 
     def supportedDropActions(self):
         return Qt.CopyAction | Qt.MoveAction

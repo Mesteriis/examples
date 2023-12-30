@@ -89,7 +89,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         e.accept()
 
     def on_WebBrowser_TitleChange(self, title):
-        self.setWindowTitle("Qt WebBrowser - " + title)
+        self.setWindowTitle(f"Qt WebBrowser - {title}")
 
     def on_WebBrowser_ProgressChange(self, a, b):
         if a <= 0 or b <= 0:

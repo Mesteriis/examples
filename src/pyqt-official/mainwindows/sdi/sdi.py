@@ -80,8 +80,7 @@ class MainWindow(QMainWindow):
     def open(self):
         fileName, _ = QFileDialog.getOpenFileName(self)
         if fileName:
-            existing = self.findMainWindow(fileName)
-            if existing:
+            if existing := self.findMainWindow(fileName):
                 existing.show()
                 existing.raise_()
                 existing.activateWindow()
@@ -100,18 +99,12 @@ class MainWindow(QMainWindow):
                 other.show()
 
     def save(self):
-        if self.isUntitled:
-            return self.saveAs()
-        else:
-            return self.saveFile(self.curFile)
+        return self.saveAs() if self.isUntitled else self.saveFile(self.curFile)
 
     def saveAs(self):
         fileName, _ = QFileDialog.getSaveFileName(self, "Save As",
                 self.curFile)
-        if not fileName:
-            return False
-
-        return self.saveFile(fileName)
+        return False if not fileName else self.saveFile(fileName)
 
     def about(self):
         QMessageBox.about(self, "About SDI",
@@ -292,7 +285,7 @@ class MainWindow(QMainWindow):
         self.textEdit.document().setModified(False)
         self.setWindowModified(False)
 
-        self.setWindowTitle("%s[*] - SDI" % self.strippedName(self.curFile))
+        self.setWindowTitle(f"{self.strippedName(self.curFile)}[*] - SDI")
 
     def strippedName(self, fullFileName):
         return QFileInfo(fullFileName).fileName()
@@ -300,11 +293,15 @@ class MainWindow(QMainWindow):
     def findMainWindow(self, fileName):
         canonicalFilePath = QFileInfo(fileName).canonicalFilePath()
 
-        for widget in QApplication.instance().topLevelWidgets():
-            if isinstance(widget, MainWindow) and widget.curFile == canonicalFilePath:
-                return widget
-
-        return None
+        return next(
+            (
+                widget
+                for widget in QApplication.instance().topLevelWidgets()
+                if isinstance(widget, MainWindow)
+                and widget.curFile == canonicalFilePath
+            ),
+            None,
+        )
 
 
 if __name__ == '__main__':

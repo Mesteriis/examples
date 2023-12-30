@@ -92,7 +92,7 @@ class ExampleContent(DemoItem):
         if len(paragraphs) < 1:
             Colors.debug("- ExampleContent.loadDescription(): Could not load description:", self._menu_manager.info[self.name].get('docfile'))
 
-        description = Colors.contentColor + "Could not load description. Ensure that the documentation for Qt is built."
+        description = f"{Colors.contentColor}Could not load description. Ensure that the documentation for Qt is built."
         for p in paragraphs:
             description = self.extractTextFromParagraph(p)
             if self.isSummary(description):
@@ -101,7 +101,10 @@ class ExampleContent(DemoItem):
         return Colors.contentColor + description
 
     def isSummary(self, text):
-        re = QRegExp("(In )?((The|This) )?(%s )?.*(tutorial|example|demo|application)" % self.name, Qt.CaseInsensitive)
+        re = QRegExp(
+            f"(In )?((The|This) )?({self.name} )?.*(tutorial|example|demo|application)",
+            Qt.CaseInsensitive,
+        )
 
         return ('[' not in text) and (re.indexIn(text) >= 0)
 

@@ -25,8 +25,7 @@ append_message = run_in_main_thread(text_area.appendPlainText)
 
 def fetch_new_messages():
     while True:
-        response = server.get(chat_url).text
-        if response:
+        if response := server.get(chat_url).text:
             append_message(response)
         sleep(.5)
 

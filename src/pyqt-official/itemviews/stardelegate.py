@@ -143,7 +143,7 @@ class StarEditor(QWidget):
     def mouseMoveEvent(self, event):
         star = self.starAtPosition(event.x())
 
-        if star != self._starRating.starCount() and star != -1:
+        if star not in [self._starRating.starCount(), -1]:
             self._starRating.setStarCount(star)
             self.update()
 
@@ -154,10 +154,7 @@ class StarEditor(QWidget):
         # Enable a star, if pointer crosses the center horizontally.
         starwidth = self._starRating.sizeHint().width() // self._starRating.maxStarCount()
         star = (x + starwidth / 2) // starwidth
-        if 0 <= star <= self._starRating.maxStarCount():
-            return star
-
-        return -1
+        return star if 0 <= star <= self._starRating.maxStarCount() else -1
 
 
 class StarDelegate(QStyledItemDelegate):
@@ -181,12 +178,11 @@ class StarDelegate(QStyledItemDelegate):
 
     def createEditor(self, parent, option, index):
         starRating = index.data()
-        if isinstance(starRating, StarRating):
-            editor = StarEditor(parent)
-            editor.editingFinished.connect(self.commitAndCloseEditor)
-            return editor
-        else:
+        if not isinstance(starRating, StarRating):
             return super(StarDelegate, self).createEditor(parent, option, index)
+        editor = StarEditor(parent)
+        editor.editingFinished.connect(self.commitAndCloseEditor)
+        return editor
 
     def setEditorData(self, editor, index):
         starRating = index.data()

@@ -57,7 +57,7 @@ class MainWindow(QGraphicsView):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
 
-        self.imagesDir = QFileInfo(__file__).absolutePath() + '/images'
+        self.imagesDir = f'{QFileInfo(__file__).absolutePath()}/images'
 
         self.updateTimer = QTimer(self)
         self.demoStartTime = QTime()
@@ -188,7 +188,7 @@ class MainWindow(QGraphicsView):
 
         if size == 10:
             self.fpsHistory.sort()
-            self.fpsMedian = self.fpsHistory[int(size / 2)]
+            self.fpsMedian = self.fpsHistory[size // 2]
             if self.fpsMedian == 0:
                 self.fpsMedian = 0.01
 
@@ -242,10 +242,21 @@ class MainWindow(QGraphicsView):
         self.scene.addItem(self.mainSceneRoot)
 
         self.companyLogo = ImageItem(
-                QImage(self.imagesDir + '/trolltech-logo.png'),
-                1000, 1000, None, True, 0.5)
-        self.qtLogo = ImageItem(QImage(self.imagesDir + '/qtlogo_small.png'),
-                1000, 1000, None, True, 0.5)
+            QImage(f'{self.imagesDir}/trolltech-logo.png'),
+            1000,
+            1000,
+            None,
+            True,
+            0.5,
+        )
+        self.qtLogo = ImageItem(
+            QImage(f'{self.imagesDir}/qtlogo_small.png'),
+            1000,
+            1000,
+            None,
+            True,
+            0.5,
+        )
         self.companyLogo.setZValue(100)
         self.qtLogo.setZValue(100)
         self.pausedLabel = DemoTextItem("PAUSED", Colors.buttonFont(),
@@ -292,7 +303,7 @@ class MainWindow(QGraphicsView):
         self.background.fill(Qt.black)
         painter = QPainter(self.background)
 
-        bg = QImage(self.imagesDir + '/demobg.png')
+        bg = QImage(f'{self.imagesDir}/demobg.png')
         painter.drawImage(0, 0, bg)
 
     def drawBackground(self, painter, rect):
@@ -312,8 +323,7 @@ class MainWindow(QGraphicsView):
         if event.key() == Qt.Key_Escape:
             QApplication.quit()
         elif event.key() == Qt.Key_F1:
-            s = ""
-            s += "\nAdapt: "
+            s = "" + "\nAdapt: "
             s += ["on", "off"][Colors.noAdapt]
             s += "\nAdaption occured: "
             s += ["no", "yes"][Colors.adapted]

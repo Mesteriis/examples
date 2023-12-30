@@ -87,10 +87,7 @@ class BorderLayout(QLayout):
         return len(self.list)
 
     def itemAt(self, index):
-        if index < len(self.list):
-            return self.list[index].item
-
-        return None
+        return self.list[index].item if index < len(self.list) else None
 
     def minimumSize(self):
         return self.calculateSize(self.MinimumSize)

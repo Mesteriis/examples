@@ -73,8 +73,11 @@ class Server(QDialog):
 
         self.server = QLocalServer()
         if not self.server.listen('fortune'):
-            QMessageBox.critical(self, "Fortune Server",
-                    "Unable to start the server: %s." % self.server.errorString())
+            QMessageBox.critical(
+                self,
+                "Fortune Server",
+                f"Unable to start the server: {self.server.errorString()}.",
+            )
             self.close()
             return
 

@@ -92,7 +92,7 @@ class ColorItem(QGraphicsItem):
         if ColorItem.n > 2 and qrand() % 3 == 0:
             root = QFileInfo(__file__).absolutePath()
 
-            image = QImage(root + '/images/head.png')
+            image = QImage(f'{root}/images/head.png')
             mime.setImageData(image)
             drag.setPixmap(QPixmap.fromImage(image).scaled(30,40))
             drag.setHotSpot(QPoint(15, 30))

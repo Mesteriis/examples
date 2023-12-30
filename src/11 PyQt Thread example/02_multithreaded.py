@@ -24,8 +24,7 @@ window.show()
 new_messages = []
 def fetch_new_messages():
     while True:
-        response = server.get(chat_url).text
-        if response:
+        if response := server.get(chat_url).text:
             new_messages.append(response)
         sleep(.5)
 
