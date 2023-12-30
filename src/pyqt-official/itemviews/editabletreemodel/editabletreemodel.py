@@ -63,9 +63,7 @@ class TreeItem(object):
         return len(self.childItems)
 
     def childNumber(self):
-        if self.parentItem != None:
-            return self.parentItem.childItems.index(self)
-        return 0
+        return self.parentItem.childItems.index(self) if self.parentItem != None else 0
 
     def columnCount(self):
         return len(self.itemData)
@@ -77,8 +75,8 @@ class TreeItem(object):
         if position < 0 or position > len(self.childItems):
             return False
 
-        for row in range(count):
-            data = [None for v in range(columns)]
+        for _ in range(count):
+            data = [None for _ in range(columns)]
             item = TreeItem(data, self)
             self.childItems.insert(position, item)
 
@@ -88,7 +86,7 @@ class TreeItem(object):
         if position < 0 or position > len(self.itemData):
             return False
 
-        for column in range(columns):
+        for _ in range(columns):
             self.itemData.insert(position, None)
 
         for child in self.childItems:
@@ -103,7 +101,7 @@ class TreeItem(object):
         if position < 0 or position + count > len(self.childItems):
             return False
 
-        for row in range(count):
+        for _ in range(count):
             self.childItems.pop(position)
 
         return True
@@ -112,7 +110,7 @@ class TreeItem(object):
         if position < 0 or position + columns > len(self.itemData):
             return False
 
-        for column in range(columns):
+        for _ in range(columns):
             self.itemData.pop(position)
 
         for child in self.childItems:
@@ -133,7 +131,7 @@ class TreeModel(QAbstractItemModel):
     def __init__(self, headers, data, parent=None):
         super(TreeModel, self).__init__(parent)
 
-        rootData = [header for header in headers]
+        rootData = list(headers)
         self.rootItem = TreeItem(rootData)
         self.setupModelData(data.split("\n"), self.rootItem)
 
@@ -144,7 +142,7 @@ class TreeModel(QAbstractItemModel):
         if not index.isValid():
             return None
 
-        if role != Qt.DisplayRole and role != Qt.EditRole:
+        if role not in [Qt.DisplayRole, Qt.EditRole]:
             return None
 
         item = self.getItem(index)
@@ -158,8 +156,7 @@ class TreeModel(QAbstractItemModel):
 
     def getItem(self, index):
         if index.isValid():
-            item = index.internalPointer()
-            if item:
+            if item := index.internalPointer():
                 return item
 
         return self.rootItem
@@ -175,8 +172,7 @@ class TreeModel(QAbstractItemModel):
             return QModelIndex()
 
         parentItem = self.getItem(parent)
-        childItem = parentItem.child(row)
-        if childItem:
+        if childItem := parentItem.child(row):
             return self.createIndex(row, column, childItem)
         else:
             return QModelIndex()
@@ -268,9 +264,7 @@ class TreeModel(QAbstractItemModel):
                     break
                 position += 1
 
-            lineData = lines[number][position:].trimmed()
-
-            if lineData:
+            if lineData := lines[number][position:].trimmed():
                 # Read the column data from the rest of the line.
                 columnData = [s for s in lineData.split('\t') if s]
 
@@ -283,7 +277,7 @@ class TreeModel(QAbstractItemModel):
                         indentations.append(position)
 
                 else:
-                    while position < indentations[-1] and len(parents) > 0:
+                    while position < indentations[-1] and parents:
                         parents.pop()
                         indentations.pop()
 

@@ -127,13 +127,16 @@ class HttpWindow(QDialog):
 
         self.outFile = QFile(fileName)
         if not self.outFile.open(QIODevice.WriteOnly):
-            QMessageBox.information(self, "HTTP",
-                    "Unable to save the file %s: %s." % (fileName, self.outFile.errorString()))
+            QMessageBox.information(
+                self,
+                "HTTP",
+                f"Unable to save the file {fileName}: {self.outFile.errorString()}.",
+            )
             self.outFile = None
             return
 
         self.progressDialog.setWindowTitle("HTTP")
-        self.progressDialog.setLabelText("Downloading %s." % fileName)
+        self.progressDialog.setLabelText(f"Downloading {fileName}.")
         self.downloadButton.setEnabled(False)
 
         self.httpRequestAborted = False
@@ -166,15 +169,19 @@ class HttpWindow(QDialog):
 
         if self.reply.error():
             self.outFile.remove()
-            QMessageBox.information(self, "HTTP",
-                    "Download failed: %s." % self.reply.errorString())
+            QMessageBox.information(
+                self, "HTTP", f"Download failed: {self.reply.errorString()}."
+            )
             self.downloadButton.setEnabled(True)
         elif redirectionTarget is not None:
             newUrl = self.url.resolved(redirectionTarget)
 
-            ret = QMessageBox.question(self, "HTTP",
-                    "Redirect to %s?" % newUrl.toString(),
-                    QMessageBox.Yes | QMessageBox.No)
+            ret = QMessageBox.question(
+                self,
+                "HTTP",
+                f"Redirect to {newUrl.toString()}?",
+                QMessageBox.Yes | QMessageBox.No,
+            )
 
             if ret == QMessageBox.Yes:
                 self.url = newUrl
@@ -186,7 +193,7 @@ class HttpWindow(QDialog):
                 return
         else:
             fileName = QFileInfo(QUrl(self.urlLineEdit.text()).path()).fileName()
-            self.statusLabel.setText("Downloaded %s to %s." % (fileName, QDir.currentPath()))
+            self.statusLabel.setText(f"Downloaded {fileName} to {QDir.currentPath()}.")
 
             self.downloadButton.setEnabled(True)
 
@@ -215,7 +222,7 @@ class HttpWindow(QDialog):
         ui = os.path.join(os.path.dirname(__file__), 'authenticationdialog.ui')
         dlg = uic.loadUi(ui)
         dlg.adjustSize()
-        dlg.siteDescription.setText("%s at %s" % (authenticator.realm(), self.url.host()))
+        dlg.siteDescription.setText(f"{authenticator.realm()} at {self.url.host()}")
 
         dlg.userEdit.setText(self.url.userName())
         dlg.passwordEdit.setText(self.url.password())
@@ -227,9 +234,12 @@ class HttpWindow(QDialog):
     def sslErrors(self, reply, errors):
         errorString = ", ".join([str(error.errorString()) for error in errors])
 
-        ret = QMessageBox.warning(self, "HTTP Example",
-                "One or more SSL errors has occurred: %s" % errorString,
-                QMessageBox.Ignore | QMessageBox.Abort)
+        ret = QMessageBox.warning(
+            self,
+            "HTTP Example",
+            f"One or more SSL errors has occurred: {errorString}",
+            QMessageBox.Ignore | QMessageBox.Abort,
+        )
 
         if ret == QMessageBox.Ignore:
             self.reply.ignoreSslErrors()

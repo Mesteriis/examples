@@ -70,7 +70,6 @@ class LetterItem(DemoItem):
             painter.drawEllipse(0, 0, 25, 25)
             painter.setFont(Colors.tickerFont())
             painter.setPen(QColor(255, 255, 255))
-            painter.drawText(10, 15, self.letter)
         else:
             brush = QLinearGradient(0, 0, 0, 25)
             brush.setSpread(QLinearGradient.PadSpread)
@@ -80,6 +79,5 @@ class LetterItem(DemoItem):
             painter.drawEllipse(0, 0, 25, 25)
             painter.setFont(Colors.tickerFont())
             painter.setPen(QColor(255, 255, 255, 255))
-            painter.drawText(10, 15, self.letter)
-
+        painter.drawText(10, 15, self.letter)
         return image

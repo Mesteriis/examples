@@ -348,7 +348,7 @@ class GraphWidget(QGraphicsView):
             self.scaleView(1.2)
         elif key == Qt.Key_Minus:
             self.scaleView(1 / 1.2)
-        elif key == Qt.Key_Space or key == Qt.Key_Enter:
+        elif key in [Qt.Key_Space, Qt.Key_Enter]:
             for item in self.scene().items():
                 if isinstance(item, Node):
                     item.setPos(-150 + qrand() % 300, -150 + qrand() % 300)

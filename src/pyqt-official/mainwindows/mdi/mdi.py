@@ -64,7 +64,7 @@ class MdiChild(QTextEdit):
         self.isUntitled = True
         self.curFile = "document%d.txt" % MdiChild.sequenceNumber
         MdiChild.sequenceNumber += 1
-        self.setWindowTitle(self.curFile + '[*]')
+        self.setWindowTitle(f'{self.curFile}[*]')
 
         self.document().contentsChanged.connect(self.documentWasModified)
 
@@ -87,17 +87,11 @@ class MdiChild(QTextEdit):
         return True
 
     def save(self):
-        if self.isUntitled:
-            return self.saveAs()
-        else:
-            return self.saveFile(self.curFile)
+        return self.saveAs() if self.isUntitled else self.saveFile(self.curFile)
 
     def saveAs(self):
         fileName, _ = QFileDialog.getSaveFileName(self, "Save As", self.curFile)
-        if not fileName:
-            return False
-
-        return self.saveFile(fileName)
+        return False if not fileName else self.saveFile(fileName)
 
     def saveFile(self, fileName):
         file = QFile(fileName)
@@ -150,7 +144,7 @@ class MdiChild(QTextEdit):
         self.isUntitled = False
         self.document().setModified(False)
         self.setWindowModified(False)
-        self.setWindowTitle(self.userFriendlyCurrentFile() + "[*]")
+        self.setWindowTitle(f"{self.userFriendlyCurrentFile()}[*]")
 
     def strippedName(self, fullFileName):
         return QFileInfo(fullFileName).fileName()
@@ -195,8 +189,7 @@ class MainWindow(QMainWindow):
     def open(self):
         fileName, _ = QFileDialog.getOpenFileName(self)
         if fileName:
-            existing = self.findMdiChild(fileName)
-            if existing:
+            if existing := self.findMdiChild(fileName):
                 self.mdiArea.setActiveSubWindow(existing)
                 return
 
@@ -270,7 +263,7 @@ class MainWindow(QMainWindow):
 
             text = "%d %s" % (i + 1, child.userFriendlyCurrentFile())
             if i < 9:
-                text = '&' + text
+                text = f'&{text}'
 
             action = self.windowMenu.addAction(text)
             action.setCheckable(True)
@@ -412,18 +405,21 @@ class MainWindow(QMainWindow):
         settings.setValue('size', self.size())
 
     def activeMdiChild(self):
-        activeSubWindow = self.mdiArea.activeSubWindow()
-        if activeSubWindow:
+        if activeSubWindow := self.mdiArea.activeSubWindow():
             return activeSubWindow.widget()
         return None
 
     def findMdiChild(self, fileName):
         canonicalFilePath = QFileInfo(fileName).canonicalFilePath()
 
-        for window in self.mdiArea.subWindowList():
-            if window.widget().currentFile() == canonicalFilePath:
-                return window
-        return None
+        return next(
+            (
+                window
+                for window in self.mdiArea.subWindowList()
+                if window.widget().currentFile() == canonicalFilePath
+            ),
+            None,
+        )
 
     def switchLayoutDirection(self):
         if self.layoutDirection() == Qt.LeftToRight:

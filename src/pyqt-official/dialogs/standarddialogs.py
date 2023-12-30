@@ -227,10 +227,12 @@ class Dialog(QDialog):
 
     def setExistingDirectory(self):    
         options = QFileDialog.DontResolveSymlinks | QFileDialog.ShowDirsOnly
-        directory = QFileDialog.getExistingDirectory(self,
-                "QFileDialog.getExistingDirectory()",
-                self.directoryLabel.text(), options=options)
-        if directory:
+        if directory := QFileDialog.getExistingDirectory(
+            self,
+            "QFileDialog.getExistingDirectory()",
+            self.directoryLabel.text(),
+            options=options,
+        ):
             self.directoryLabel.setText(directory)
 
     def setOpenFileName(self):    
@@ -252,7 +254,7 @@ class Dialog(QDialog):
                 "All Files (*);;Text Files (*.txt)", options=options)
         if files:
             self.openFilesPath = files[0]
-            self.openFileNamesLabel.setText("[%s]" % ', '.join(files))
+            self.openFileNamesLabel.setText(f"[{', '.join(files)}]")
 
     def setSaveFileName(self):    
         options = QFileDialog.Options()

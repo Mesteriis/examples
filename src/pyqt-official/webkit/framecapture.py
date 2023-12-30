@@ -96,7 +96,7 @@ class FrameCapture(QObject):
         cout("Loading %s\n" % url.toString())
         self._percent = 0
         index = outputFileName.rfind('.')
-        self._fileName = index == -1 and outputFileName + ".png" or outputFileName
+        self._fileName = index == -1 and f"{outputFileName}.png" or outputFileName
         self._page.mainFrame().load(url)
         self._page.setViewportSize(QSize(1024, 768))
  
@@ -125,7 +125,7 @@ class FrameCapture(QObject):
         fileName = self._fileName
         if self._frameCounter:
             index = fileName.rfind('.')
-            fileName = "%s_frame%s%s" % (fileName[:index], self._frameCounter, fileName[index:])
+            fileName = f"{fileName[:index]}_frame{self._frameCounter}{fileName[index:]}"
         image = QImage(frame.contentsSize(), QImage.Format_ARGB32_Premultiplied)
         image.fill(Qt.transparent)
         painter = QPainter(image)

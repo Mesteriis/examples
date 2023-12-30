@@ -169,13 +169,14 @@ class PieView(QAbstractItemView):
         value = self.model().data(valueIndex)
         if value is not None and value > 0.0:
 
-            listItem = 0
-            for row in range(index.row()-1, -1, -1):
-                if self.model().data(self.model().index(row, 1, self.rootIndex())) > 0.0:
-                    listItem += 1
-
+            listItem = sum(
+                1
+                for row in range(index.row() - 1, -1, -1)
+                if self.model().data(self.model().index(row, 1, self.rootIndex()))
+                > 0.0
+            )
             if index.column() == 0:
-            
+
                 itemHeight = QFontMetrics(self.viewOptions().font).height()
                 return QRect(self.totalSize,
                              int(self.margin + listItem*itemHeight),
@@ -410,7 +411,7 @@ class PieView(QAbstractItemView):
                 if region.intersects(QRegion(contentsRect)):
                     indexes.append(index)
 
-        if len(indexes) > 0:
+        if indexes:
             firstRow = indexes[0].row()
             lastRow = indexes[0].row()
             firstColumn = indexes[0].column()
@@ -425,12 +426,10 @@ class PieView(QAbstractItemView):
             selection = QItemSelection(
                 self.model().index(firstRow, firstColumn, self.rootIndex()),
                 self.model().index(lastRow, lastColumn, self.rootIndex()))
-            self.selectionModel().select(selection, command)
         else:
             noIndex = QModelIndex()
             selection = QItemSelection(noIndex, noIndex)
-            self.selectionModel().select(selection, command)
-
+        self.selectionModel().select(selection, command)
         self.update()
 
     def updateGeometries(self):
@@ -530,8 +529,7 @@ class MainWindow(QMainWindow):
                         QModelIndex())
 
                 row = 0
-                line = stream.readLine()
-                while line:
+                while line := stream.readLine():
                     self.model.insertRows(row, 1, QModelIndex())
 
                     pieces = line.split(',')
@@ -543,10 +541,8 @@ class MainWindow(QMainWindow):
                                 QColor(pieces[2]), Qt.DecorationRole)
 
                     row += 1
-                    line = stream.readLine()
-
                 f.close()
-                self.statusBar().showMessage("Loaded %s" % path, 2000)
+                self.statusBar().showMessage(f"Loaded {path}", 2000)
 
     def saveFile(self):
         fileName, _ = QFileDialog.getSaveFileName(self, "Save file as", '',
@@ -557,12 +553,12 @@ class MainWindow(QMainWindow):
 
             if f.open(QFile.WriteOnly | QFile.Text):
                 for row in range(self.model.rowCount(QModelIndex())):
-                    pieces = []
+                    pieces = [
+                        self.model.data(
+                            self.model.index(row, 0, QModelIndex()), Qt.DisplayRole
+                        )
+                    ]
 
-                    pieces.append(
-                            self.model.data(
-                                    self.model.index(row, 0, QModelIndex()),
-                                    Qt.DisplayRole))
                     pieces.append(
                             '%g' % self.model.data(
                                     self.model.index(row, 1, QModelIndex()),
@@ -576,7 +572,7 @@ class MainWindow(QMainWindow):
                     f.write(b'\n')
 
             f.close()
-            self.statusBar().showMessage("Saved %s" % fileName, 2000)
+            self.statusBar().showMessage(f"Saved {fileName}", 2000)
 
 
 if __name__ == '__main__':

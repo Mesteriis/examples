@@ -75,8 +75,7 @@ class MultiPageWidgetPlugin(QPyDesignerCustomWidgetPlugin):
     def initialize(self, formEditor):
         if self.initialized:
             return
-        manager = formEditor.extensionManager()
-        if manager:
+        if manager := formEditor.extensionManager():
             self.factory = MultiPageWidgetExtensionFactory(manager)
             manager.registerExtensions(self.factory, Q_TYPEID['QDesignerContainerExtension'])
         self.initialized = True
@@ -119,16 +118,14 @@ class MultiPageWidgetPlugin(QPyDesignerCustomWidgetPlugin):
     def currentIndexChanged(self, index):
         widget = self.sender()
         if widget and isinstance(widget, PyMultiPageWidget):
-            form = QDesignerFormWindowInterface.findFormWindow(widget)
-            if form:
+            if form := QDesignerFormWindowInterface.findFormWindow(widget):
                 form.emitSelectionChanged()
 
     def pageTitleChanged(self, title):
         widget = self.sender()
         if widget and isinstance(widget, PyMultiPageWidget):
             page = widget.widget(widget.getCurrentIndex())
-            form = QDesignerFormWindowInterface.findFormWindow(widget)
-            if form:
+            if form := QDesignerFormWindowInterface.findFormWindow(widget):
                 editor = form.core()
                 manager = editor.extensionManager()
                 sheet = manager.extension(page, Q_TYPEID['QDesignerPropertySheetExtension'])

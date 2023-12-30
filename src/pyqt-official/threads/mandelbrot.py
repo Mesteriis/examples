@@ -76,8 +76,10 @@ class RenderThread(QThread):
         self.restart = False
         self.abort = False
 
-        for i in range(RenderThread.ColormapSize):
-            self.colormap.append(self.rgbFromWaveLength(380.0 + (i * 400.0 / RenderThread.ColormapSize)))
+        self.colormap.extend(
+            self.rgbFromWaveLength(380.0 + (i * 400.0 / RenderThread.ColormapSize))
+            for i in range(RenderThread.ColormapSize)
+        )
 
     def __del__(self):
         self.mutex.lock()
@@ -102,6 +104,8 @@ class RenderThread(QThread):
             self.condition.wakeOne()
 
     def run(self):
+        NumPasses = 8
+        Limit = 4
         while True:
             self.mutex.lock()
             resultSize = self.resultSize
@@ -114,12 +118,10 @@ class RenderThread(QThread):
             halfHeight = resultSize.height() // 2
             image = QImage(resultSize, QImage.Format_RGB32)
 
-            NumPasses = 8
             curpass = 0
 
             while curpass < NumPasses:
                 MaxIterations = (1 << (2 * curpass + 6)) + 32
-                Limit = 4
                 allBlack = True
 
                 for y in range(-halfHeight, halfHeight):

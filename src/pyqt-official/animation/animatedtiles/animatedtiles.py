@@ -94,11 +94,7 @@ class Button(QGraphicsWidget):
         r = self.boundingRect()
 
         grad = QLinearGradient(r.topLeft(), r.bottomRight())
-        if option.state & QStyle.State_MouseOver:
-            color_0 = Qt.white
-        else:
-            color_0 = Qt.lightGray
-
+        color_0 = Qt.white if option.state & QStyle.State_MouseOver else Qt.lightGray
         color_1 = Qt.darkGray
 
         if down:

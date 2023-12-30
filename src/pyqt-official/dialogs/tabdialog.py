@@ -166,22 +166,20 @@ class ApplicationsTab(QWidget):
         topLabel = QLabel("Open with:")
 
         applicationsListBox = QListWidget()
-        applications = []
-
-        for i in range(1, 31):
-            applications.append("Application %d" % i)
-
+        applications = ["Application %d" % i for i in range(1, 31)]
         applicationsListBox.insertItems(0, applications)
 
         alwaysCheckBox = QCheckBox()
 
-        if fileInfo.suffix():
-            alwaysCheckBox = QCheckBox("Always use this application to open "
-                    "files with the extension '%s'" % fileInfo.suffix())
-        else:
-            alwaysCheckBox = QCheckBox("Always use this application to open "
-                    "this type of file")
-
+        alwaysCheckBox = (
+            QCheckBox(
+                f"Always use this application to open files with the extension '{fileInfo.suffix()}'"
+            )
+            if fileInfo.suffix()
+            else QCheckBox(
+                "Always use this application to open " "this type of file"
+            )
+        )
         layout = QVBoxLayout()
         layout.addWidget(topLabel)
         layout.addWidget(applicationsListBox)
@@ -195,11 +193,7 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
 
-    if len(sys.argv) >= 2:
-        fileName = sys.argv[1]
-    else:
-        fileName = "."
-
+    fileName = sys.argv[1] if len(sys.argv) >= 2 else "."
     tabdialog = TabDialog(fileName)
     tabdialog.show()
     sys.exit(app.exec_())

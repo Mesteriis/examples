@@ -209,10 +209,7 @@ class StickMan(QGraphicsObject):
         return len(self.m_nodes)
 
     def node(self, idx):
-        if idx >= 0 and idx < len(self.m_nodes):
-            return self.m_nodes[idx]
-
-        return None
+        return self.m_nodes[idx] if idx >= 0 and idx < len(self.m_nodes) else None
 
     def timerEvent(self, e):
         self.update()
@@ -454,7 +451,7 @@ class Animation(object):
         self.m_name = stream.readQString()
         frameCount = stream.readInt()
 
-        for i in range(frameCount):
+        for _ in range(frameCount):
             nodeCount = stream.readInt()
 
             frame = Frame()

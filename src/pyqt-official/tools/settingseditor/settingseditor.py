@@ -189,7 +189,7 @@ class MainWindow(QMainWindow):
         if not settings.isWritable():
             niceName += " (read only)"
 
-        self.setWindowTitle("%s - Settings Editor" % niceName)
+        self.setWindowTitle(f"{niceName} - Settings Editor")
 
 
 class LocationDialog(QDialog):
@@ -432,7 +432,7 @@ class SettingsTree(QTreeWidget):
         ancestor = item.parent()
 
         while ancestor:
-            key = ancestor.text(0) + '/' + key
+            key = f'{ancestor.text(0)}/{key}'
             ancestor = ancestor.parent()
 
         d = item.data(2, Qt.UserRole)
@@ -489,11 +489,7 @@ class SettingsTree(QTreeWidget):
             self.deleteItem(parent, dividerIndex)
 
     def createItem(self, text, parent, index):
-        after = None
-
-        if index != 0:
-            after = self.childAt(parent, index - 1)
-
+        after = self.childAt(parent, index - 1) if index != 0 else None
         if parent is not None:
             item = QTreeWidgetItem(parent, after)
         else:
@@ -511,25 +507,23 @@ class SettingsTree(QTreeWidget):
         del item
 
     def childAt(self, parent, index):
-        if parent is not None:
-            return parent.child(index)
-        else:
-            return self.topLevelItem(index)
+        return parent.child(index) if parent is not None else self.topLevelItem(index)
 
     def childCount(self, parent):
-        if parent is not None:
-            return parent.childCount()
-        else:
-            return self.topLevelItemCount()
+        return parent.childCount() if parent is not None else self.topLevelItemCount()
 
     def findChild(self, parent, text, startIndex):
-        for i in range(self.childCount(parent)):
-            if self.childAt(parent, i).text(0) == text:
-                return i
-        return -1
+        return next(
+            (
+                i
+                for i in range(self.childCount(parent))
+                if self.childAt(parent, i).text(0) == text
+            ),
+            -1,
+        )
 
     def moveItemForward(self, parent, oldIndex, newIndex):
-        for int in range(oldIndex - newIndex):
+        for _ in range(oldIndex - newIndex):
             self.deleteItem(parent, newIndex)
 
 
@@ -574,7 +568,9 @@ class VariantDelegate(QItemDelegate):
         self.timeExp.setPattern('([0-9]{,2}):([0-9]{,2}):([0-9]{,2})')
 
         self.dateTimeExp = QRegExp()
-        self.dateTimeExp.setPattern(self.dateExp.pattern() + 'T' + self.timeExp.pattern())
+        self.dateTimeExp.setPattern(
+            f'{self.dateExp.pattern()}T{self.timeExp.pattern()}'
+        )
 
     def paint(self, painter, option, index):
         if index.column() == 2:
@@ -715,7 +711,7 @@ class VariantDelegate(QItemDelegate):
         elif value is None:
             return '<Invalid>'
 
-        return '<%s>' % value
+        return f'<{value}>'
 
 
 if __name__ == '__main__':

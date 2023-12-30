@@ -194,10 +194,7 @@ class PadNavigator(QGraphicsView):
 
         columns = size.width()
         rows = size.height()
-        stateGrid = []
-        for y in range(rows):
-            stateGrid.append([QState(frontState) for _ in range(columns)])
-
+        stateGrid = [[QState(frontState) for _ in range(columns)] for _ in range(rows)]
         frontState.setInitialState(stateGrid[0][0])
         selectionItem.setPos(pad.iconAt(0, 0).pos())
 

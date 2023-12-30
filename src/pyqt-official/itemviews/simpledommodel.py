@@ -103,22 +103,17 @@ class DomModel(QAbstractItemModel):
 
         if index.column() == 0:
             return node.nodeName()
-        
+
         elif index.column() == 1:
             for i in range(0, attributeMap.count()):
                 attribute = attributeMap.item(i)
-                attributes.append(attribute.nodeName() + '="' +
-                                  attribute.nodeValue() + '"')
+                attributes.append(f'{attribute.nodeName()}="{attribute.nodeValue()}"')
 
             return " ".join(attributes)
 
         if index.column() == 2:
             value = node.nodeValue()
-            if value is None:
-                return ''
-
-            return ' '.join(node.nodeValue().split('\n'))
-
+            return '' if value is None else ' '.join(node.nodeValue().split('\n'))
         return None
 
     def flags(self, index):
@@ -144,13 +139,8 @@ class DomModel(QAbstractItemModel):
         if not self.hasIndex(row, column, parent):
             return QModelIndex()
 
-        if not parent.isValid():
-            parentItem = self.rootItem
-        else:
-            parentItem = parent.internalPointer()
-
-        childItem = parentItem.child(row)
-        if childItem:
+        parentItem = parent.internalPointer() if parent.isValid() else self.rootItem
+        if childItem := parentItem.child(row):
             return self.createIndex(row, column, childItem)
         else:
             return QModelIndex()
@@ -171,11 +161,7 @@ class DomModel(QAbstractItemModel):
         if parent.column() > 0:
             return 0
 
-        if not parent.isValid():
-            parentItem = self.rootItem
-        else:
-            parentItem = parent.internalPointer()
-
+        parentItem = parent.internalPointer() if parent.isValid() else self.rootItem
         return parentItem.node().childNodes().count()
 
 

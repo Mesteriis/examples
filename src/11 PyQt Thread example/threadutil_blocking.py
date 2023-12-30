@@ -25,8 +25,7 @@ def run_in_thread(thread_fn):
     return decorator
 
 def _main_thread():
-    app = QApplication.instance()
-    if app:
+    if app := QApplication.instance():
         return app.thread()
     # We reach here in tests that don't (want to) create a QApplication.
     if int(QThread.currentThreadId()) == get_ident():

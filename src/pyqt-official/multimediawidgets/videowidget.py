@@ -127,7 +127,7 @@ class VideoPlayer(QWidget):
 
     def handleError(self):
         self.playButton.setEnabled(False)
-        self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
+        self.errorLabel.setText(f"Error: {self.mediaPlayer.errorString()}")
 
 
 if __name__ == '__main__':

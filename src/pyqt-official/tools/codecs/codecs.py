@@ -138,10 +138,7 @@ class MainWindow(QMainWindow):
             elif sortKey.startswith('UTF-16'):
                 rank = 2
             elif iso8859RegExp.exactMatch(sortKey):
-                if len(iso8859RegExp.cap(1)) == 1:
-                    rank = 3
-                else:
-                    rank = 4
+                rank = 3 if len(iso8859RegExp.cap(1)) == 1 else 4
             else:
                 rank = 5
 
@@ -157,7 +154,7 @@ class MainWindow(QMainWindow):
         for codec in self.codecs:
             name = codec_name(codec)
 
-            action = QAction(name + '...', self, triggered=self.save)
+            action = QAction(f'{name}...', self, triggered=self.save)
             action.setData(name)
             self.saveAsActs.append(action)
 

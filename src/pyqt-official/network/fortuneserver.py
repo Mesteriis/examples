@@ -122,8 +122,11 @@ class Server(QDialog):
 
         self.tcpServer = QTcpServer(self)
         if not self.tcpServer.listen():
-            QMessageBox.critical(self, "Fortune Server",
-                    "Unable to start the server: %s." % self.tcpServer.errorString())
+            QMessageBox.critical(
+                self,
+                "Fortune Server",
+                f"Unable to start the server: {self.tcpServer.errorString()}.",
+            )
             self.close()
             return
 

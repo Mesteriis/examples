@@ -101,9 +101,12 @@ class Dialog(QDialog):
         self.bytesReceived = 0
 
         while not self.tcpServer.isListening() and not self.tcpServer.listen():
-            ret = QMessageBox.critical(self, "Loopback",
-                    "Unable to start the test: %s." % self.tcpServer.errorString(),
-                    QMessageBox.Retry | QMessageBox.Cancel)
+            ret = QMessageBox.critical(
+                self,
+                "Loopback",
+                f"Unable to start the test: {self.tcpServer.errorString()}.",
+                QMessageBox.Retry | QMessageBox.Cancel,
+            )
             if ret == QMessageBox.Cancel:
                 return
 
@@ -151,8 +154,11 @@ class Dialog(QDialog):
         if socketError == QTcpSocket.RemoteHostClosedError:
             return
 
-        QMessageBox.information(self, "Network error",
-                "The following error occured: %s." % self.tcpClient.errorString())
+        QMessageBox.information(
+            self,
+            "Network error",
+            f"The following error occured: {self.tcpClient.errorString()}.",
+        )
 
         self.tcpClient.close()
         self.tcpServer.close()

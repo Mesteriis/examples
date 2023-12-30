@@ -204,7 +204,7 @@ void main(void)
                             QImage(root + ('/images/side%d.png' % (i + 1))).mirrored()))
 
             for j in range(4):
-                self.texCoords.append(((j == 0 or j == 3), (j == 0 or j == 1)))
+                self.texCoords.append((j in [0, 3], j in [0, 1]))
 
                 x, y, z = self.coords[i][j]
                 self.vertices.append((0.2 * x, 0.2 * y, 0.2 * z))

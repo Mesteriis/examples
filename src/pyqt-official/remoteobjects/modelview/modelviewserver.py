@@ -107,8 +107,7 @@ def addChild(numChildren, nestingLevel):
         return result
 
     for i in range(numChildren):
-        child = QStandardItem(
-                "Child num {}, nesting level {}".format(i + 1, nestingLevel))
+        child = QStandardItem(f"Child num {i + 1}, nesting level {nestingLevel}")
 
         if i == 0:
             child.appendRow(addChild(numChildren, nestingLevel - 1))
@@ -130,11 +129,11 @@ if __name__ == '__main__':
             ["First Column with spacing", "Second Column with spacing"])
 
     for i in range(10000):
-        firstItem = QStandardItem("FancyTextNumber {}".format(i))
+        firstItem = QStandardItem(f"FancyTextNumber {i}")
         if i == 0:
             firstItem.appendRow(addChild(2, 2))
 
-        secondItem = QStandardItem("FancyRow2TextNumber {}".format(i))
+        secondItem = QStandardItem(f"FancyRow2TextNumber {i}")
         if i % 2 == 0:
             firstItem.setBackground(Qt.red)
 

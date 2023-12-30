@@ -159,7 +159,7 @@ class DragWidget(QWidget):
                 text = str(text, encoding='latin1')
             except TypeError:
                 # Python v2.
-                text = str(text)
+                text = text
 
             newLabel = DragLabel(text, self)
             newLabel.move(event.pos() - offset)

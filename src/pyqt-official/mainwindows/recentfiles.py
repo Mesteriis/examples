@@ -91,8 +91,7 @@ class MainWindow(QMainWindow):
             self.saveFile(fileName)
 
     def openRecentFile(self):
-        action = self.sender()
-        if action:
+        if action := self.sender():
             self.loadFile(action.data())
 
     def about(self):
@@ -115,7 +114,7 @@ class MainWindow(QMainWindow):
                 statusTip="Save the document under a new name",
                 triggered=self.saveAs)
 
-        for i in range(MainWindow.MaxRecentFiles):
+        for _ in range(MainWindow.MaxRecentFiles):
             self.recentFileActs.append(
                     QAction(self, visible=False,
                             triggered=self.openRecentFile))
@@ -184,7 +183,7 @@ class MainWindow(QMainWindow):
     def setCurrentFile(self, fileName):
         self.curFile = fileName
         if self.curFile:
-            self.setWindowTitle("%s - Recent Files" % self.strippedName(self.curFile))
+            self.setWindowTitle(f"{self.strippedName(self.curFile)} - Recent Files")
         else:
             self.setWindowTitle("Recent Files")
 

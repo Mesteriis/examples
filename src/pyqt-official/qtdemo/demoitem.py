@@ -157,43 +157,42 @@ class DemoItem(QGraphicsObject):
         return None
 
     def _validateImage(self):
-        if (self._sharedImage.transform != DemoItem._transform and not Colors.noRescale) or (self._sharedImage.image is None and self._sharedImage.pixmap is None):
-            # (Re)create image according to new transform.
-            self._sharedImage.image = None
-            self._sharedImage.pixmap = None
-            self._sharedImage.transform = DemoItem._transform
+        if (
+            self._sharedImage.transform == DemoItem._transform or Colors.noRescale
+        ) and (
+            self._sharedImage.image is not None
+            or self._sharedImage.pixmap is not None
+        ):
+            return True
+        # (Re)create image according to new transform.
+        self._sharedImage.image = None
+        self._sharedImage.pixmap = None
+        self._sharedImage.transform = DemoItem._transform
 
             # Let subclass create and draw a new image according to the new
             # transform.
-            if Colors.noRescale:
-                transform = QTransform()
-            else:
-                transform = DemoItem._transform
-            image = self.createImage(transform)
-            if image is not None:
-                if Colors.showBoundingRect:
-                    # Draw red transparent rect.
-                    painter = QPainter(image)
-                    painter.fillRect(image.rect(), QColor(255, 0, 0, 50))
-                    painter.end()
+        transform = QTransform() if Colors.noRescale else DemoItem._transform
+        image = self.createImage(transform)
+        if image is None:
+            return False
 
-                self._sharedImage.unscaledBoundingRect = self._sharedImage.transform.inverted()[0].mapRect(QRectF(image.rect()))
+        if Colors.showBoundingRect:
+            # Draw red transparent rect.
+            painter = QPainter(image)
+            painter.fillRect(image.rect(), QColor(255, 0, 0, 50))
+            painter.end()
 
-                if Colors.usePixmaps:
-                    if image.isNull():
-                        self._sharedImage.pixmap = QPixmap(1, 1)
-                    else:
-                        self._sharedImage.pixmap = QPixmap(image.size())
+        self._sharedImage.unscaledBoundingRect = self._sharedImage.transform.inverted()[0].mapRect(QRectF(image.rect()))
 
-                    self._sharedImage.pixmap.fill(QColor(0, 0, 0, 0))
-                    painter = QPainter(self._sharedImage.pixmap)
-                    painter.drawImage(0, 0, image)
-                else:
-                    self._sharedImage.image = image
-
-                return True
-            else:
-                return False
+        if Colors.usePixmaps:
+            self._sharedImage.pixmap = (
+                QPixmap(1, 1) if image.isNull() else QPixmap(image.size())
+            )
+            self._sharedImage.pixmap.fill(QColor(0, 0, 0, 0))
+            painter = QPainter(self._sharedImage.pixmap)
+            painter.drawImage(0, 0, image)
+        else:
+            self._sharedImage.image = image
 
         return True
 
@@ -202,35 +201,36 @@ class DemoItem(QGraphicsObject):
         return self._sharedImage.unscaledBoundingRect
 
     def paint(self, painter, option=None, widget=None):
-        if self._validateImage():
-            wasSmoothPixmapTransform = painter.testRenderHint(QPainter.SmoothPixmapTransform)
-            painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        if not self._validateImage():
+            return
+        wasSmoothPixmapTransform = painter.testRenderHint(QPainter.SmoothPixmapTransform)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
 
-            if Colors.noRescale:
-                # Let the painter scale the image for us.  This may degrade
-                # both quality and performance.
-                if self._sharedImage.image is not None:
-                    painter.drawImage(self.pos(), self._sharedImage.image)
-                else:
-                    painter.drawPixmap(self.pos(), self._sharedImage.pixmap)
+        if Colors.noRescale:
+            # Let the painter scale the image for us.  This may degrade
+            # both quality and performance.
+            if self._sharedImage.image is not None:
+                painter.drawImage(self.pos(), self._sharedImage.image)
             else:
-                m = painter.worldTransform()
-                painter.setWorldTransform(QTransform())
+                painter.drawPixmap(self.pos(), self._sharedImage.pixmap)
+        else:
+            m = painter.worldTransform()
+            painter.setWorldTransform(QTransform())
 
-                x = m.dx()
-                y = m.dy()
-                if self.noSubPixeling:
-                    x = qRound(x)
-                    y = qRound(y)
+            x = m.dx()
+            y = m.dy()
+            if self.noSubPixeling:
+                x = qRound(x)
+                y = qRound(y)
 
-                if self._sharedImage.image is not None:
-                    painter.drawImage(QPointF(x, y), self._sharedImage.image)
-                else:
-                    painter.drawPixmap(QPointF(x, y), self._sharedImage.pixmap)
+            if self._sharedImage.image is not None:
+                painter.drawImage(QPointF(x, y), self._sharedImage.image)
+            else:
+                painter.drawPixmap(QPointF(x, y), self._sharedImage.pixmap)
 
-            if not wasSmoothPixmapTransform:
-                painter.setRenderHint(QPainter.SmoothPixmapTransform,
-                        False)
+        if not wasSmoothPixmapTransform:
+            painter.setRenderHint(QPainter.SmoothPixmapTransform,
+                    False)
 
     def collidesWithItem(self, item, mode):
         return False

@@ -81,22 +81,22 @@ class ClassWizard(QWizard):
 
         if self.field('comment'):
             block += '/*\n'
-            block += '    ' + header + '\n'
+            block += f'    {header}' + '\n'
             block += '*/\n'
             block += '\n'
 
         if self.field('protect'):
-            block += '#ifndef ' + macroName + '\n'
-            block += '#define ' + macroName + '\n'
+            block += f'#ifndef {macroName}' + '\n'
+            block += f'#define {macroName}' + '\n'
             block += '\n'
 
         if self.field('includeBase'):
-            block += '#include ' + baseInclude + '\n'
+            block += f'#include {baseInclude}' + '\n'
             block += '\n'
 
-        block += 'class ' + className
+        block += f'class {className}'
         if baseClass:
-            block += ' : public ' + baseClass
+            block += f' : public {baseClass}'
 
         block += '\n'
         block += '{\n'
@@ -108,16 +108,16 @@ class ClassWizard(QWizard):
         block += 'public:\n'
 
         if self.field('qobjectCtor'):
-            block += '    ' + className + '(QObject *parent = 0);\n'
+            block += f'    {className}' + '(QObject *parent = 0);\n'
         elif self.field('qwidgetCtor'):
-            block += '    ' + className + '(QWidget *parent = 0);\n'
+            block += f'    {className}' + '(QWidget *parent = 0);\n'
         elif self.field('defaultCtor'):
-            block += '    ' + className + '();\n'
+            block += f'    {className}' + '();\n'
 
             if self.field('copyCtor'):
-                block += '    ' + className + '(const ' + className + ' &other);\n'
+                block += f'    {className}(const {className}' + ' &other);\n'
                 block += '\n'
-                block += '    ' + className + ' &operator=' + '(const ' + className + ' &other);\n'
+                block += f'    {className} &operator=(const {className}' + ' &other);\n'
 
         block += '};\n'
 
@@ -125,7 +125,7 @@ class ClassWizard(QWizard):
             block += '\n'
             block += '#endif\n'
 
-        headerFile = QFile(outputDir + '/' + header)
+        headerFile = QFile(f'{outputDir}/{header}')
 
         if not headerFile.open(QFile.WriteOnly | QFile.Text):
             QMessageBox.warning(None, "Class Wizard",
@@ -138,47 +138,50 @@ class ClassWizard(QWizard):
 
         if self.field('comment'):
             block += '/*\n'
-            block += '    ' + implementation + '\n'
+            block += f'    {implementation}' + '\n'
             block += '*/\n'
             block += '\n'
 
-        block += '#include "' + header + '"\n'
+        block += f'#include "{header}' + '"\n'
         block += '\n'
 
         if self.field('qobjectCtor'):
-            block += className + '::' + className + '(QObject *parent)\n'
-            block += '    : ' + baseClass + '(parent)\n'
+            block += f'{className}::{className}' + '(QObject *parent)\n'
+            block += f'    : {baseClass}' + '(parent)\n'
             block += '{\n'
             block += '}\n'
         elif self.field('qwidgetCtor'):
-            block += className + '::' + className + '(QWidget *parent)\n'
-            block += '    : ' + baseClass + '(parent)\n'
+            block += f'{className}::{className}' + '(QWidget *parent)\n'
+            block += f'    : {baseClass}' + '(parent)\n'
             block += '{\n'
             block += '}\n'
         elif self.field('defaultCtor'):
-            block += className + '::' + className + '()\n'
+            block += f'{className}::{className}' + '()\n'
             block += '{\n'
             block += '    // missing code\n'
             block += '}\n'
 
             if self.field('copyCtor'):
                 block += '\n'
-                block += className + '::' + className + '(const ' + className + ' &other)\n'
+                block += f'{className}::{className}(const {className}' + ' &other)\n'
                 block += '{\n'
                 block += '    *this = other;\n'
                 block += '}\n'
                 block += '\n'
-                block += className + ' &' + className + '::operator=(const ' + className + ' &other)\n'
+                block += (
+                    f'{className} &{className}::operator=(const {className}'
+                    + ' &other)\n'
+                )
                 block += '{\n'
 
                 if baseClass:
-                    block += '    ' + baseClass + '::operator=(other);\n'
+                    block += f'    {baseClass}' + '::operator=(other);\n'
 
                 block += '    // missing code\n'
                 block += '    return *this;\n'
                 block += '}\n'
 
-        implementationFile = QFile(outputDir + '/' + implementation)
+        implementationFile = QFile(f'{outputDir}/{implementation}')
 
         if not implementationFile.open(QFile.WriteOnly | QFile.Text):
             QMessageBox.warning(None, "Class Wizard",
@@ -313,7 +316,7 @@ class CodeStylePage(QWizardPage):
 
     def initializePage(self):
         className = self.field('className')
-        self.macroNameLineEdit.setText(className.upper() + "_H")
+        self.macroNameLineEdit.setText(f"{className.upper()}_H")
 
         baseClass = self.field('baseClass')
         is_baseClass = bool(baseClass)
@@ -326,9 +329,9 @@ class CodeStylePage(QWizardPage):
         if not is_baseClass:
             self.baseIncludeLineEdit.clear()
         elif QRegExp('Q[A-Z].*').exactMatch(baseClass):
-            self.baseIncludeLineEdit.setText('<' + baseClass + '>')
+            self.baseIncludeLineEdit.setText(f'<{baseClass}>')
         else:
-            self.baseIncludeLineEdit.setText('"' + baseClass.lower() + '.h"')
+            self.baseIncludeLineEdit.setText(f'"{baseClass.lower()}.h"')
 
 
 class OutputFilesPage(QWizardPage):
@@ -367,8 +370,8 @@ class OutputFilesPage(QWizardPage):
 
     def initializePage(self):
         className = self.field('className')
-        self.headerLineEdit.setText(className.lower() + '.h')
-        self.implementationLineEdit.setText(className.lower() + '.cpp')
+        self.headerLineEdit.setText(f'{className.lower()}.h')
+        self.implementationLineEdit.setText(f'{className.lower()}.cpp')
         self.outputDirLineEdit.setText(QDir.toNativeSeparators(QDir.tempPath()))
 
 
@@ -390,7 +393,7 @@ class ConclusionPage(QWizardPage):
     def initializePage(self):
         finishText = self.wizard().buttonText(QWizard.FinishButton)
         finishText.replace('&', '')
-        self.label.setText("Click %s to generate the class skeleton." % finishText)
+        self.label.setText(f"Click {finishText} to generate the class skeleton.")
 
 
 if __name__ == '__main__':

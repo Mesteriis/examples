@@ -68,8 +68,7 @@ class ImageSettings(QDialog):
         self.ui.imageCodecBox.addItem("Default image format", "")
         for codecName in self.imagecapture.supportedImageCodecs():
             description = self.imagecapture.imageCodecDescription(codecName)
-            self.ui.imageCodecBox.addItem(codecName + ": " + description,
-                    codecName)
+            self.ui.imageCodecBox.addItem(f"{codecName}: {description}", codecName)
 
         self.ui.imageQualitySlider.setRange(0, QMultimedia.VeryHighQuality)
 
@@ -99,10 +98,7 @@ class ImageSettings(QDialog):
     @staticmethod
     def boxValue(box):
         idx = box.currentIndex()
-        if idx == -1:
-            return None
-
-        return box.itemData(idx)
+        return None if idx == -1 else box.itemData(idx)
 
     @staticmethod
     def selectComboBoxItem(box, value):
@@ -125,8 +121,7 @@ class VideoSettings(QDialog):
         self.ui.audioCodecBox.addItem("Default audio codec", "")
         for codecName in self.mediaRecorder.supportedAudioCodecs():
             description = self.mediaRecorder.audioCodecDescription(codecName)
-            self.ui.audioCodecBox.addItem(codecName + ": " + description,
-                    codecName)
+            self.ui.audioCodecBox.addItem(f"{codecName}: {description}", codecName)
 
         supportedSampleRates, _ = self.mediaRecorder.supportedAudioSampleRates()
         for sampleRate in supportedSampleRates:
@@ -137,8 +132,7 @@ class VideoSettings(QDialog):
         self.ui.videoCodecBox.addItem("Default video codec", "")
         for codecName in self.mediaRecorder.supportedVideoCodecs():
             description = self.mediaRecorder.videoCodecDescription(codecName)
-            self.ui.videoCodecBox.addItem(codecName + ": " + description,
-                    codecName)
+            self.ui.videoCodecBox.addItem(f"{codecName}: {description}", codecName)
 
         self.ui.videoQualitySlider.setRange(0, QMultimedia.VeryHighQuality)
 
@@ -157,9 +151,9 @@ class VideoSettings(QDialog):
         self.ui.containerFormatBox.addItem("Default container", "")
         for format in self.mediaRecorder.supportedContainers():
             self.ui.containerFormatBox.addItem(
-                    format + ":" + self.mediaRecorder.containerDescription(
-                            format),
-                    format)
+                f"{format}:{self.mediaRecorder.containerDescription(format)}",
+                format,
+            )
 
     def audioSettings(self):
         settings = self.mediaRecorder.audioSettings()
@@ -209,10 +203,7 @@ class VideoSettings(QDialog):
     @staticmethod
     def boxValue(box):
         idx = box.currentIndex()
-        if idx == -1:
-            return None
-
-        return box.itemData(idx)
+        return None if idx == -1 else box.itemData(idx)
 
     @staticmethod
     def selectComboBoxItem(box, value):
@@ -266,11 +257,7 @@ class Camera(QMainWindow):
         self.setCamera(cameraDevice)
 
     def setCamera(self, cameraDevice):
-        if cameraDevice.isEmpty():
-            self.camera = QCamera()
-        else:
-            self.camera = QCamera(cameraDevice)
-
+        self.camera = QCamera() if cameraDevice.isEmpty() else QCamera(cameraDevice)
         self.camera.stateChanged.connect(self.updateCameraState)
         self.camera.error.connect(self.displayCameraError)
 

@@ -56,10 +56,7 @@ class IconSizeSpinBox(QSpinBox):
     def valueFromText(text):
         regExp = QRegExp("(\\d+)(\\s*[xx]\\s*\\d+)?")
 
-        if regExp.exactMatch(text):
-            return int(regExp.cap(1))
-        else:
-            return 0
+        return int(regExp.cap(1)) if regExp.exactMatch(text) else 0
 
     @staticmethod
     def textFromValue(value):
@@ -91,11 +88,10 @@ class ImageDelegate(QItemDelegate):
         comboBox.setCurrentIndex(pos)
 
     def setModelData(self, editor, model, index):
-        comboBox = editor
-        if not comboBox:
+        if comboBox := editor:
+            model.setData(index, comboBox.currentText())
+        else:
             return
-
-        model.setData(index, comboBox.currentText())
 
     def emitCommitData(self):
         self.commitData.emit(self.sender())
@@ -143,7 +139,7 @@ class IconPreviewArea(QWidget):
             self.updatePixmapLabels()
 
     def createHeaderLabel(self, text):
-        label = QLabel("<b>%s</b>" % text)
+        label = QLabel(f"<b>{text}</b>")
         label.setAlignment(Qt.AlignCenter)
         return label
 
@@ -283,11 +279,7 @@ class MainWindow(QMainWindow):
                 else:
                     mode = QIcon.Selected
 
-                if item2.text() == "On":
-                    state = QIcon.On
-                else:
-                    state = QIcon.Off
-
+                state = QIcon.On if item2.text() == "On" else QIcon.Off
                 fileName = item0.data(Qt.UserRole)
                 image = QImage(fileName)
                 if not image.isNull():
@@ -416,9 +408,12 @@ class MainWindow(QMainWindow):
 
         self.styleActionGroup = QActionGroup(self)
         for styleName in QStyleFactory.keys():
-            action = QAction(self.styleActionGroup,
-                    text="%s Style" % styleName, checkable=True,
-                    triggered=self.changeStyle)
+            action = QAction(
+                self.styleActionGroup,
+                text=f"{styleName} Style",
+                checkable=True,
+                triggered=self.changeStyle,
+            )
             action.setData(styleName)
 
         self.guessModeStateAct = QAction("&Guess Image Mode/State", self,

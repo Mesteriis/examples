@@ -112,7 +112,7 @@ class PyAnalogClock(QWidget):
 
         painter.setPen(self.hourColor)
 
-        for i in range(0, 12):
+        for _ in range(0, 12):
             painter.drawLine(88, 0, 96, 0)
             painter.rotate(30.0)
 

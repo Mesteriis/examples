@@ -316,7 +316,7 @@ class GLWidget(QOpenGLWidget):
         return angle
 
     def createBubbles(self, number):
-        for i in range(number):
+        for _ in range(number):
             position = QPointF(self.width()*(0.1 + 0.8*random.random()),
                                self.height()*(0.1 + 0.8*random.random()))
             radius = min(self.width(), self.height())*(0.0125 + 0.0875*random.random())

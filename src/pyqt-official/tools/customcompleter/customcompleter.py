@@ -182,7 +182,7 @@ class MainWindow(QMainWindow):
                 try:
                     line = str(line, encoding='ascii')
                 except TypeError:
-                    line = str(line)
+                    line = line
 
                 words.append(line)
 

@@ -65,7 +65,7 @@ class DigitalClock(QLCDNumber):
         time = QTime.currentTime()
         text = time.toString('hh:mm')
         if (time.second() % 2) == 0:
-            text = text[:2] + ' ' + text[3:]
+            text = f'{text[:2]} {text[3:]}'
 
         self.display(text)
 

@@ -103,16 +103,16 @@ class Window(QWidget):
         dateLabel = QLabel()
         dateEdit = QDateEdit(QDate.currentDate())
         dateEdit.setDateRange(QDate(2005, 1, 1), QDate(2010, 12, 31))
-        dateLabel.setText("Appointment date (between %s and %s):" %
-                    (dateEdit.minimumDate().toString(Qt.ISODate),
-                    dateEdit.maximumDate().toString(Qt.ISODate)))
+        dateLabel.setText(
+            f"Appointment date (between {dateEdit.minimumDate().toString(Qt.ISODate)} and {dateEdit.maximumDate().toString(Qt.ISODate)}):"
+        )
 
         timeLabel = QLabel()
         timeEdit = QTimeEdit(QTime.currentTime())
         timeEdit.setTimeRange(QTime(9, 0, 0, 0), QTime(16, 30, 0, 0))
-        timeLabel.setText("Appointment time (between %s and %s):" %
-                    (timeEdit.minimumTime().toString(Qt.ISODate),
-                    timeEdit.maximumTime().toString(Qt.ISODate)))
+        timeLabel.setText(
+            f"Appointment time (between {timeEdit.minimumTime().toString(Qt.ISODate)} and {timeEdit.maximumTime().toString(Qt.ISODate)}):"
+        )
 
         self.meetingLabel = QLabel()
         self.meetingEdit = QDateTimeEdit(QDateTime.currentDateTime())
@@ -146,14 +146,14 @@ class Window(QWidget):
 
         if self.meetingEdit.displayedSections() & QDateTimeEdit.DateSections_Mask:
             self.meetingEdit.setDateRange(QDate(2004, 11, 1), QDate(2005, 11, 30))
-            self.meetingLabel.setText("Meeting date (between %s and %s):" %
-                    (self.meetingEdit.minimumDate().toString(Qt.ISODate),
-                    self.meetingEdit.maximumDate().toString(Qt.ISODate)))
+            self.meetingLabel.setText(
+                f"Meeting date (between {self.meetingEdit.minimumDate().toString(Qt.ISODate)} and {self.meetingEdit.maximumDate().toString(Qt.ISODate)}):"
+            )
         else:
             self.meetingEdit.setTimeRange(QTime(0, 7, 20, 0), QTime(21, 0, 0, 0))
-            self.meetingLabel.setText("Meeting time (between %s and %s):" %
-                    (self.meetingEdit.minimumTime().toString(Qt.ISODate),
-                    self.meetingEdit.maximumTime().toString(Qt.ISODate)))
+            self.meetingLabel.setText(
+                f"Meeting time (between {self.meetingEdit.minimumTime().toString(Qt.ISODate)} and {self.meetingEdit.maximumTime().toString(Qt.ISODate)}):"
+            )
 
     def createDoubleSpinBoxes(self):
         self.doubleSpinBoxesGroup = QGroupBox("Double precision spinboxes")

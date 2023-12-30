@@ -147,10 +147,7 @@ class SpreadSheetItem(QTableWidgetItem):
         elif op == "*":
             result = (firstVal * secondVal)
         elif op == "/":
-            if secondVal == 0:
-                result = "nan"
-            else:
-                result = (firstVal / secondVal)
+            result = "nan" if secondVal == 0 else (firstVal / secondVal)
         elif op == "=":
             if start:
                 result = start.text()

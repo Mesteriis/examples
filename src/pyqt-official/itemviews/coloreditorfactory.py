@@ -57,8 +57,7 @@ class ColorListEditor(QComboBox):
         self.populateList()
 
     def getColor(self):
-        color = self.itemData(self.currentIndex(), Qt.DecorationRole)
-        return color
+        return self.itemData(self.currentIndex(), Qt.DecorationRole)
 
     def setColor(self, color):
         self.setCurrentIndex(self.findData(color, Qt.DecorationRole))

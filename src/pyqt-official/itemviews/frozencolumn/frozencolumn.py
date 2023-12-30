@@ -136,7 +136,7 @@ def main(args):
 
     app = QApplication(args)
     model = QStandardItemModel()
-    file = QFile(QFileInfo(__file__).absolutePath() + '/grades.txt')
+    file = QFile(f'{QFileInfo(__file__).absolutePath()}/grades.txt')
     if file.open(QFile.ReadOnly):
         line = file.readLine(200).decode('utf-8')
         header = split_and_strip(line, ',')

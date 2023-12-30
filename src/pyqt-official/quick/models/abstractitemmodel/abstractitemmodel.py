@@ -90,10 +90,7 @@ class AnimalModel(QAbstractListModel):
         if role == self.TypeRole:
             return animal.type()
 
-        if role == self.SizeRole:
-            return animal.size()
-
-        return QVariant()
+        return animal.size() if role == self.SizeRole else QVariant()
 
     def roleNames(self):
         return self._roles

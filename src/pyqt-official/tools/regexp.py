@@ -156,7 +156,7 @@ class RegExpDialog(QDialog):
         escaped = str(pattern)
         escaped.replace('\\', '\\\\')
         escaped.replace('"', '\\"')
-        self.escapedPatternLineEdit.setText('"' + escaped + '"')
+        self.escapedPatternLineEdit.setText(f'"{escaped}"')
 
         rx = QRegExp(pattern)
         cs = Qt.CaseSensitive if self.caseSensitiveCheckBox.isChecked() else Qt.CaseInsensitive

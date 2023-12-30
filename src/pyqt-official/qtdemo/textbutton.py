@@ -329,7 +329,7 @@ class TextButton(DemoItem):
         if self.state == TextButton.DISABLED:
             return
 
-        if self.state == TextButton.HIGHLIGHT or self.state == TextButton.OFF:
+        if self.state in [TextButton.HIGHLIGHT, TextButton.OFF]:
             self.setState(TextButton.ON)
 
     def mouseReleaseEvent(self, event):

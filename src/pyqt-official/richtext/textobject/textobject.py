@@ -83,8 +83,7 @@ class Window(QWidget):
         file = QFile(fileName)
 
         if not file.open(QIODevice.ReadOnly):
-            QMessageBox.warning(self, "Error Opening File",
-                    "Could not open '%s'" % fileName)
+            QMessageBox.warning(self, "Error Opening File", f"Could not open '{fileName}'")
 
         svgData = file.readAll()
 

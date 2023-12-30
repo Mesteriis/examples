@@ -84,28 +84,28 @@ class AudioTest(AudioDevicesBase):
     def test(self):
         self.testResult.clear()
 
-        if not self.deviceInfo.isNull():
-            if self.deviceInfo.isFormatSupported(self.settings):
-                self.testResult.setText("Success")
-                self.nearestSampleRate.setText("")
-                self.nearestChannel.setText("")
-                self.nearestCodec.setText("")
-                self.nearestSampleSize.setText("")
-                self.nearestSampleType.setText("")
-                self.nearestEndian.setText("")
-            else:
-                nearest = self.deviceInfo.nearestFormat(self.settings)
-                self.testResult.setText("Failed")
-                self.nearestSampleRate.setText(str(nearest.sampleRate()))
-                self.nearestChannel.setText(str(nearest.channelCount()))
-                self.nearestCodec.setText(nearest.codec())
-                self.nearestSampleSize.setText(str(nearest.sampleSize()))
-                self.nearestSampleType.setText(
-                        self.sampleTypeToString(nearest.sampleType()))
-                self.nearestEndian.setText(
-                        self.endianToString(nearest.byteOrder()))
-        else:
+        if self.deviceInfo.isNull():
             self.testResult.setText("No Device")
+
+        elif self.deviceInfo.isFormatSupported(self.settings):
+            self.testResult.setText("Success")
+            self.nearestSampleRate.setText("")
+            self.nearestChannel.setText("")
+            self.nearestCodec.setText("")
+            self.nearestSampleSize.setText("")
+            self.nearestSampleType.setText("")
+            self.nearestEndian.setText("")
+        else:
+            nearest = self.deviceInfo.nearestFormat(self.settings)
+            self.testResult.setText("Failed")
+            self.nearestSampleRate.setText(str(nearest.sampleRate()))
+            self.nearestChannel.setText(str(nearest.channelCount()))
+            self.nearestCodec.setText(nearest.codec())
+            self.nearestSampleSize.setText(str(nearest.sampleSize()))
+            self.nearestSampleType.setText(
+                    self.sampleTypeToString(nearest.sampleType()))
+            self.nearestEndian.setText(
+                    self.endianToString(nearest.byteOrder()))
 
     sampleTypeMap = {
         QAudioFormat.SignedInt: "SignedInt",
@@ -129,11 +129,7 @@ class AudioTest(AudioDevicesBase):
     def modeChanged(self, idx):
         self.testResult.clear()
 
-        if idx == 0:
-            self.mode = QAudio.AudioInput
-        else:
-            self.mode = QAudio.AudioOutput
-
+        self.mode = QAudio.AudioInput if idx == 0 else QAudio.AudioOutput
         self.deviceBox.clear()
         for deviceInfo in QAudioDeviceInfo.availableDevices(self.mode):
             self.deviceBox.addItem(deviceInfo.deviceName(), deviceInfo)

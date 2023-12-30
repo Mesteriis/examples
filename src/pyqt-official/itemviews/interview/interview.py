@@ -58,7 +58,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QApplication,
         QFileIconProvider, QListView, QSplitter, QTableView, QTreeView)
 
 
-images_dir = QFileInfo(__file__).absolutePath() + '/images'
+images_dir = f'{QFileInfo(__file__).absolutePath()}/images'
 
 
 class Node(object):
@@ -70,10 +70,10 @@ class Node(object):
 class Model(QAbstractItemModel):
     def __init__(self, rows, columns, parent = None):
         super(Model, self).__init__(parent)
-        self.services = QIcon(images_dir + '/services.png')
+        self.services = QIcon(f'{images_dir}/services.png')
         self.rc = rows
         self.cc = columns
-        self.tree = [Node() for node in range(rows)]
+        self.tree = [Node() for _ in range(rows)]
         self.iconProvider = QFileIconProvider()
 
     def index(self, row, column, parent):
@@ -89,8 +89,7 @@ class Model(QAbstractItemModel):
             # parent of QModelIndex child
             if child.isValid():
                 childNode = child.internalPointer()
-                parentNode = self.parent(childNode)
-                if parentNode:
+                if parentNode := self.parent(childNode):
                     return self.createIndex(self.row(parentNode), 0, parentNode)
             return QModelIndex()
         else:
@@ -99,9 +98,7 @@ class Model(QAbstractItemModel):
                 return child.parent
 
     def rowCount(self, parent):
-        if parent.isValid() and parent.column() != 0:
-            return 0
-        return self.rc
+        return 0 if parent.isValid() and parent.column() != 0 else self.rc
 
     def columnCount(self, parent):
         return self.cc
@@ -136,11 +133,8 @@ class Model(QAbstractItemModel):
 
     def node(self, row, parent):
         if parent and not parent.children:
-            parent.children = [Node(parent) for node in range(self.rc)]
-        if parent:
-            return parent.children[row]
-        else:
-            return self.tree[row]
+            parent.children = [Node(parent) for _ in range(self.rc)]
+        return parent.children[row] if parent else self.tree[row]
 
     def row(self, node):
         if node.parent:
@@ -180,7 +174,7 @@ def main(args):
     list.viewport().setAttribute(Qt.WA_StaticContents)
     list.setAttribute(Qt.WA_MacShowFocusRect, False)
     page.addWidget(list)
-    page.setWindowIcon(QIcon(images_dir + '/interview.png'))
+    page.setWindowIcon(QIcon(f'{images_dir}/interview.png'))
     page.setWindowTitle("Interview")
     page.show()
     return app.exec_()

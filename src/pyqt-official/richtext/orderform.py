@@ -116,8 +116,7 @@ class MainWindow(QMainWindow):
         cursor.insertBlock()
 
         date = QDate.currentDate()
-        cursor.insertText("Date: %s" % date.toString('d MMMM yyyy'),
-                textFormat)
+        cursor.insertText(f"Date: {date.toString('d MMMM yyyy')}", textFormat)
         cursor.insertBlock()
 
         bodyFrameFormat = QTextFrameFormat()

@@ -379,10 +379,7 @@ class DiagramScene(QGraphicsScene):
         super(DiagramScene, self).mouseReleaseEvent(mouseEvent)
 
     def isItemChange(self, type):
-        for item in self.selectedItems():
-            if isinstance(item, type):
-                return True
-        return False
+        return any(isinstance(item, type) for item in self.selectedItems())
 
 
 class MainWindow(QMainWindow):

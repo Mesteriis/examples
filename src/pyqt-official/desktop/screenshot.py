@@ -90,10 +90,14 @@ class Screenshot(QWidget):
 
     def saveScreenshot(self):
         format = 'png'
-        initialPath = QDir.currentPath() + "/untitled." + format
+        initialPath = f"{QDir.currentPath()}/untitled.{format}"
 
-        fileName, _ = QFileDialog.getSaveFileName(self, "Save As", initialPath,
-                "%s Files (*.%s);;All Files (*)" % (format.upper(), format))
+        fileName, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save As",
+            initialPath,
+            f"{format.upper()} Files (*.{format});;All Files (*)",
+        )
         if fileName:
             self.originalPixmap.save(fileName, format)
 
@@ -102,11 +106,7 @@ class Screenshot(QWidget):
             QApplication.instance().beep()
 
         screen = QApplication.primaryScreen()
-        if screen is not None:
-            self.originalPixmap = screen.grabWindow(0)
-        else:
-            self.originalPixmap = QPixmap()
-
+        self.originalPixmap = screen.grabWindow(0) if screen is not None else QPixmap()
         self.updateScreenshotLabel()
 
         self.newScreenshotButton.setDisabled(False)

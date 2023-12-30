@@ -81,7 +81,7 @@ class Point(QPoint):
         return self.x() * 17 ^ self.y()
 
     def __repr__(self):
-        return "Point(%s, %s)" % (self.x(), self.y())
+        return f"Point({self.x()}, {self.y()})"
 
 
 def tileForCoordinate(lat, lng, zoom):
@@ -95,17 +95,13 @@ def tileForCoordinate(lat, lng, zoom):
 
 def longitudeFromTile(tx, zoom):
     zn = float(1 << zoom)
-    lat = tx / zn * 360.0 - 180.0
-
-    return lat
+    return tx / zn * 360.0 - 180.0
 
 
 def latitudeFromTile(ty, zoom):
     zn = float(1 << zoom)
     n = math.pi - 2 * math.pi * ty / zn
-    lng = 180.0 / math.pi * math.atan(0.5 * (math.exp(n) - math.exp(-n)))
-
-    return lng
+    return 180.0 / math.pi * math.atan(0.5 * (math.exp(n) - math.exp(-n)))
 
 
 class SlippyMap(QObject):
@@ -326,12 +322,11 @@ class LightMaps(QWidget):
             if self.zoomPixmap.size() != box:
                 self.zoomPixmap = QPixmap(box)
                 self.zoomPixmap.fill(Qt.lightGray)
-    
-            if True:
-                p = QPainter(self.zoomPixmap)
-                p.translate(-xy)
-                self._largeMap.render(p, QRect(xy, box))
-                p.end()
+
+            p = QPainter(self.zoomPixmap)
+            p.translate(-xy)
+            self._largeMap.render(p, QRect(xy, box))
+            p.end()
 
             clipPath = QPainterPath()
             clipPath.addEllipse(QPointF(center), ring, ring)
@@ -369,27 +364,26 @@ class LightMaps(QWidget):
         if not event.buttons():
             return
 
-        if not self.zoomed:
-            if not self.pressed or not self.snapped:
-                delta = event.pos() - self.pressPos
-                self.pressPos = event.pos()
-                self._normalMap.pan(delta)
-                return
-            else:
-                threshold = 10
-                delta = event.pos() - self.pressPos
-                if self.snapped:
-                    self.snapped &= delta.x() < threshold
-                    self.snapped &= delta.y() < threshold
-                    self.snapped &= delta.x() > -threshold
-                    self.snapped &= delta.y() > -threshold
-
-                if not self.snapped:
-                    self.tapTimer.stop()
-
-        else:
+        if self.zoomed:
             self.dragPos = event.pos()
             self.update()
+
+        elif not self.pressed or not self.snapped:
+            delta = event.pos() - self.pressPos
+            self.pressPos = event.pos()
+            self._normalMap.pan(delta)
+            return
+        else:
+            delta = event.pos() - self.pressPos
+            if self.snapped:
+                threshold = 10
+                self.snapped &= delta.x() < threshold
+                self.snapped &= delta.y() < threshold
+                self.snapped &= delta.x() > -threshold
+                self.snapped &= delta.y() > -threshold
+
+            if not self.snapped:
+                self.tapTimer.stop()
 
     def mouseReleaseEvent(self, event):
         self.zoomed = False
@@ -405,11 +399,11 @@ class LightMaps(QWidget):
                 self._normalMap.pan(QPoint(0, 20))
             if event.key() == Qt.Key_Down:
                 self._normalMap.pan(QPoint(0, -20))
-            if event.key() == Qt.Key_Z or event.key() == Qt.Key_Select:
+            if event.key() in [Qt.Key_Z, Qt.Key_Select]:
                 self.dragPos = QPoint(self.width() / 2, self.height() / 2)
                 self.activateZoom()
         else:
-            if event.key() == Qt.Key_Z or event.key() == Qt.Key_Select:
+            if event.key() in [Qt.Key_Z, Qt.Key_Select]:
                 self.zoomed = False
                 self.update()
 

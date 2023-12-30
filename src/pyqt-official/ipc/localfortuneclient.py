@@ -134,8 +134,10 @@ class Client(QDialog):
                 None,
         }
 
-        msg = errors.get(socketError,
-                "The following error occurred: %s." % self.socket.errorString())
+        msg = errors.get(
+            socketError,
+            f"The following error occurred: {self.socket.errorString()}.",
+        )
         if msg is not None:
             QMessageBox.information(self, "Fortune Client", msg)
 

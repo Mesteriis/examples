@@ -90,10 +90,9 @@ class Window(QDialog):
         self.resize(700, 300)
 
     def browse(self):
-        directory = QFileDialog.getExistingDirectory(self, "Find Files",
-                QDir.currentPath())
-
-        if directory:
+        if directory := QFileDialog.getExistingDirectory(
+            self, "Find Files", QDir.currentPath()
+        ):
             if self.directoryComboBox.findText(directory) == -1:
                 self.directoryComboBox.addItem(directory)
 

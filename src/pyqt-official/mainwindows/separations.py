@@ -190,11 +190,7 @@ class ScreenWidget(QFrame):
                 p = self.originalImage.pixel(x, y)
 
                 # Separate the source pixel into its cyan component.
-                if self.inverted:
-                    amount = convert(p)
-                else:
-                    amount = 255 - convert(p)
-
+                amount = convert(p) if self.inverted else 255 - convert(p)
                 newColor = QColor(
                     255 - min(int(amount * cyanInk), 255),
                     255 - min(int(amount * magentaInk), 255),
@@ -462,8 +458,9 @@ class Viewer(QMainWindow):
         info = QFileInfo(imageFile)
 
         if info.baseName() != '':
-            newImageFile = QFileInfo(info.absoluteDir(),
-                    info.baseName() + '.png').absoluteFilePath()
+            newImageFile = QFileInfo(
+                info.absoluteDir(), f'{info.baseName()}.png'
+            ).absoluteFilePath()
 
             if not self.finalWidget.pixmap().save(newImageFile, 'PNG'):
                 QMessageBox.warning(self, "Cannot save file",
